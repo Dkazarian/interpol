@@ -1,24 +1,24 @@
 class Interpolator
  
-  @columns #lista de listas
+ 
   
   def polinomio points
     
-    first_column = calculateFirstColumn points  #calculo la primera columna a partir de los puntos
-    @columns[0] = first_column                  #me guardo la primera columna
+    first_column = calculateFirstColumn(points) #calculo la primera columna a partir de los puntos
+    @columns = [calculateFirstColumn(points)]   
     column = calculateColumn first_column       #calculo la siguiente columna a partir de la primera
-    i = 1
-    while column                                #while que corta cuando la columna devuelve null?
+    i = 1 
+    while column                          #while que corta cuando la columna devuelve nil?
       @columns[i] = column                      #me guardo la columna en el array
       column = calculateColumn column           #calculo la siguiente columna a partir de la anterior
-      i++
+      i+=1 
     end
     
   end
   
   def calculateFirstColumn points
     length = points.length
-    if length < 2 return nil #aseguramos que hay mas de dos puntos
+    return nil if length < 2 #aseguramos que hay mas de dos puntos
     array = []
     for i in 0..length-2
       pointA = points[i]
@@ -30,11 +30,17 @@ class Interpolator
   
   def calculateColumn values
     length = values.length
-    if length < 2 return nil #aseguramos que hay mas de dos valores
+    return nil if length < 2  #aseguramos que hay mas de dos valores
     array = []
     for i in 0..values.length-2
       array[i] = (values[i] - values[i+1]) / 2
     end
     array
   end
+end
+
+if __FILE__ == $0 
+  require_relative "../model/point"
+  interpolator = Interpolator.new
+  puts interpolator.polinomio([[-1,2],[3,4],[40,20]].map{|p| Point.new p})
 end
