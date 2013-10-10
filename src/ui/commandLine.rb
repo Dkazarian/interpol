@@ -25,10 +25,10 @@ class CommandLine
     
   end
     
-  def parse_point string
-      
+  def parse_point string      
       point = string.split(",").map {|c| Float(c)} 
-      Point.new(point)unless point.length!=2     
+      raise :invalid_format if point.length!=2     
+      Point.new(point)
   end
   
   def add params
