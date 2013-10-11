@@ -65,11 +65,7 @@ class CommandLine
   
   
   def points
-    if @points.length > 0
-      puts "#{@points*",\n"}"
-    else
-      puts "No se ingresaron puntos."
-    end
+    puts @points.length > 0? "#{@points*",\n"}" : "No se ingresaron puntos."
   end
   
   def clear
