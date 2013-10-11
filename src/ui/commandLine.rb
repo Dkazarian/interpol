@@ -3,9 +3,9 @@ class CommandLine
   def initialize interpolator = nil
   
     @interpolator = interpolator
+    @points = []
     
   end
-  
 
   def help
     
@@ -32,21 +32,19 @@ class CommandLine
   end
   
   def add params
-      
-      points = []
+    new_points = []
       begin
-        params.each { |param| points << parse_point(param)}
-        puts "No implementado. Agrega los puntos: #{points*","}"
-      rescue 
+        params.each { |param| new_points << parse_point(param)}
+        @points << new_points
+        puts "Se agregaron los puntos: #{new_points*","}"
+      rescue
         puts "Formato invalido"
       end
-  
   end
 
   
   def rm params
-      points = []
-      
+    points = []
       begin
         params.each { |param| points << parse_point(param)}
         puts "No implementado. Elimina los puntos: #{points*","}"
@@ -67,7 +65,11 @@ class CommandLine
   
   
   def points
-    puts "No implementado. Muestra lista de puntos"
+    if @points.length > 0
+      puts "#{@points*",\n"}"
+    else
+      puts "No se ingresaron puntos."
+    end
   end
   
   def clear
