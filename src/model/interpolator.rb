@@ -1,8 +1,8 @@
 class Interpolator
  
- 
+  attr_accessor :columns
   
-  def polinomio points
+  def interpolate points
     
     first_column = calculateFirstColumn(points) #calculo la primera columna a partir de los puntos
     @columns = [calculateFirstColumn(points)]   #me guardo la primera columna en el array

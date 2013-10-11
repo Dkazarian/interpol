@@ -26,7 +26,6 @@ class CommandLine
   end
     
   def parse_point string
-      
       point = string.split(",").map {|c| Float(c)} 
       Point.new(point)unless point.length!=2     
   end
@@ -55,7 +54,11 @@ class CommandLine
   
   
   def interpolate 
-    puts "No implementado. Calcula(si es necesario) y muestra polinomio interpolante"    
+    deltas = @interpolator.interpolate @points
+    for i in 0..deltas.length - 1
+      puts "Deltas#{i}: #{deltas[i]*","}\n"
+    end
+    #puts "No implementado. Calcula(si es necesario) y muestra polinomio interpolante"    
   end
   
   
@@ -69,7 +72,8 @@ class CommandLine
   end
   
   def clear
-    puts "No implementado. Borra todo para interpolar algo nuevo"
+    @points = []
+    puts "Se eliminaron todos los puntos."
   end
   
   def exec_command input
@@ -77,7 +81,6 @@ class CommandLine
     command, *params = input.split(/\s/)
     
     case command
-    
       when /add/
         add params
       when /rm/, /remove/
