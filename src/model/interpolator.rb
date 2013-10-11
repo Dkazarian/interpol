@@ -5,13 +5,11 @@ class Interpolator
   def polinomio points
     
     first_column = calculateFirstColumn(points) #calculo la primera columna a partir de los puntos
-    @columns = [calculateFirstColumn(points)]   
+    @columns = [calculateFirstColumn(points)]   #me guardo la primera columna en el array
     column = calculateColumn first_column       #calculo la siguiente columna a partir de la primera
-    i = 1 
-    while column                          #while que corta cuando la columna devuelve nil?
-      @columns[i] = column                      #me guardo la columna en el array
+    while column                                #while que corta cuando la columna devuelve nil
+      @columns  << column                       #me guardo la columna en el array
       column = calculateColumn column           #calculo la siguiente columna a partir de la anterior
-      i+=1 
     end
     
   end

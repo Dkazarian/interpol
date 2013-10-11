@@ -80,21 +80,21 @@ class CommandLine
     
     case command
     
-      when /\Aadd\z/i
+      when /add/
         add params
-      when /\Arm\z/i
+      when /rm/, /remove/
         rm params
-      when /\Ainterpolate\z/i
+      when /interpolate/
         interpolate 
-      when /\Acalculate\z/i
+      when /calculate/
         calculate params
-      when /\Apoints\z/i
+      when /points/
         points 
-      when /\Aclear\z/i
+      when /clr/, /clear/
         clear 
-      when /\Aquit\z/i
+      when /quit/, /exit/
         abort("Adios!")
-      when /\Ahelp\z/i
+      when /help/
         help
       else
         puts "No existe el comando. Para ver los comandos, use help"
