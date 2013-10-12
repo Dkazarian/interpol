@@ -12,7 +12,13 @@ class Point
     @x = vector[0]
     @y = vector[1]
   end
-    
+  def y
+    @y.to_f
+  end
+  
+  def x
+    @x.to_f
+  end
   
   def to_s
     "(#{self.x},#{self.y})"

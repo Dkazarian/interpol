@@ -5,13 +5,14 @@ class Interpolator
   def interpolate points
     
     first_column = calculateFirstColumn(points) #calculo la primera columna a partir de los puntos
-    @columns = [calculateFirstColumn(points)]   #me guardo la primera columna en el array
-    column = calculateColumn first_column       #calculo la siguiente columna a partir de la primera
-    while column                                #while que corta cuando la columna devuelve nil
+    @columns = [first_column]   #me guardo la primera columna en el array
+    column = calculateColumn first_column      #calculo la siguiente columna a partir de la primera
+
+    while column and column.length >0                      
       @columns  << column                       #me guardo la columna en el array
       column = calculateColumn column           #calculo la siguiente columna a partir de la anterior
     end
-    
+    @columns    
   end
   
   def calculateFirstColumn points
@@ -40,5 +41,5 @@ end
 if __FILE__ == $0 
   require_relative "../model/point"
   interpolator = Interpolator.new
-  puts interpolator.polinomio([[-1,2],[3,4],[40,20]].map{|p| Point.new p})
+  puts interpolator.interpolate([[-1,2],[3,4],[40,20]].map{|p| Point.new p})
 end
