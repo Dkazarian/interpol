@@ -58,6 +58,12 @@ class CommandLine
   
   def interpolate 
     deltas = @interpolator.interpolate @points
+    
+    if deltas == nil
+      puts "No hay suficientes puntos para interpolar"
+      return
+    end
+    
     for i in 0..deltas.length - 1
       puts "Deltas#{i}: #{deltas[i]*","}\n"
     end

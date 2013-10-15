@@ -1,18 +1,17 @@
 class Interpolator
- 
-  attr_accessor :columns
+  
   
   def interpolate points
-    
-    first_column = calculateFirstColumn(points) #calculo la primera columna a partir de los puntos
-    @columns = [first_column]   #me guardo la primera columna en el array
-    column = calculateColumn first_column      #calculo la siguiente columna a partir de la primera
+    first_column = calculateFirstColumn points
+    return if first_column == nil
+    columns = [first_column]
+    column = calculateColumn first_column
 
-    while column and column.length >0                      
-      @columns  << column                       #me guardo la columna en el array
-      column = calculateColumn column           #calculo la siguiente columna a partir de la anterior
+    while column
+      columns << column
+      column = calculateColumn column
     end
-    @columns    
+    columns
   end
   
   def calculateFirstColumn points
@@ -20,11 +19,16 @@ class Interpolator
     return nil if length < 2 #aseguramos que hay mas de dos puntos
     array = []
     for i in 0..length-2
+#      binding.pry
       pointA = points[i]
       pointB = points[i+1]
-      array[i] = (pointA.y - pointB.y) / (pointA.x - pointB.x) 
+      array[i] = interpolatePoints pointA, pointB
     end
     array
+  end
+  
+  def interpolatePoints pointA, pointB
+    (pointA.y - pointB.y) / (pointA.x - pointB.x)
   end
   
   def calculateColumn values
@@ -32,9 +36,15 @@ class Interpolator
     return nil if length < 2  #aseguramos que hay mas de dos valores
     array = []
     for i in 0..values.length-2
-      array[i] = (values[i] - values[i+1]) / 2
+      valueA = values[i]
+      valueB = values[i+1]
+      array[i] = interpolateValues valueA, valueB
     end
     array
+  end
+  
+  def interpolateValues valueA, valueB
+    (valueA - valueB) / 2
   end
 end
 
