@@ -12,6 +12,4 @@ describe Point do
   end
 end
 
-def p x,y
-  Point.new([x,y])
-end
+

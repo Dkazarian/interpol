@@ -29,3 +29,7 @@ class Point
     "(#{self.x},#{self.y})"
   end
 end
+
+def p x,y
+  Point.new([x,y])
+end
