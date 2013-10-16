@@ -4,6 +4,9 @@ class Interpolator
   attr_accessor :points
   @points = []
   
+  def points points
+    @points = points.sort
+  end
   
   def remove_point point    
     @points.delete point

@@ -1,5 +1,4 @@
-require_relative "ui/commandLine"
-require_relative "model/model"
+require_relative "ui/command_line"
 #require 'pry'
 
 CommandLine.new.start
