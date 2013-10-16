@@ -46,7 +46,7 @@ class CommandLine
   end
     
   def start
-  
+      
     help
     
     loop do 
@@ -57,8 +57,10 @@ class CommandLine
   end   
 
 
+  #########################################
+  #               COMMANDS                #
+  #########################################
   
-  #comands
   def help
     
     puts "="*40
