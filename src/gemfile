@@ -1,3 +1,8 @@
+source 'http://rubygems.org'
+#debugging
 gem 'rdoc'
 gem 'pry'
 gem 'pry-nav'
+
+#testing
+gem 'rspec'
