@@ -15,10 +15,30 @@ describe Interpolator do
     
   end
   
-  context "progressive polynomial" do
+  context "progressive deltas" do
+    before :each do
+      @points = [ 
+                  p(1,1), 
+                  p(3,3), 
+                  p(4,13), 
+                  p(5,37), 
+                  p(7,151)
+                ]
+      @interpolator.points = @points
+      @interpolator.interpolate
+    end
     
-    it "should obtain the same deltas than the example of page 85" do
-      @interpolator.points = [p(1,1), p(3,3), p(4,13), p(5,37), p(7,151)]
+    it "should have the correct amount of deltas" do
+      
+      @deltas = @interpolator.progressive_deltas
+      @deltas.length.should == @points.length - 1
+      for i in 0..@deltas.length-1
+        @deltas[i].length.should == @points.length - i - 1
+      end
+    end
+    
+    it "should obtain the same deltas of the example of page 85" do
+      
       @interpolator.progressive_deltas.should == [ 
                                                     [1,10,24,57],
                                                       [3,7,11],
@@ -27,6 +47,12 @@ describe Interpolator do
                                                   ]
       
     end
+    
+    it "should obtain the same polynomial of the example of page 85" do
+      @interpolator.progressive_polynomial.should == "1 + 1.(x-1) + 3.(x-1)(x-3) + 1.(x-1)(x-3)(x-4)"
+    end
+    
+    
   end
   
 end

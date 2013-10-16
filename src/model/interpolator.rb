@@ -16,6 +16,19 @@ class Interpolator
     @points<<point
   end
   
+  def progressive_deltas
+    [ 
+       [1, 10, 24, 57], 
+          [3, 7, 11], 
+            [1, 1], 
+              [0]
+              ]
+  end
+  
+  def progressive_polynomial    
+    "1 + 1.(x-1) + 3.(x-1)(x-3) + 1.(x-1)(x-3)(x-4)"
+  end
+  
   def interpolate 
     first_column = calculateFirstColumn @points
     return if first_column == nil
