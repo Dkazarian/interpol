@@ -1,8 +1,20 @@
+require_relative "model"
+
 class Interpolator
+  attr_accessor :points
+  @points = []
   
   
-  def interpolate points
-    first_column = calculateFirstColumn points
+  def remove_point point    
+    @points.delete point
+  end
+  
+  def add_point point
+    @points<<point
+  end
+  
+  def interpolate 
+    first_column = calculateFirstColumn @points
     return if first_column == nil
     columns = [first_column]
     column = calculateColumn first_column
@@ -48,8 +60,3 @@ class Interpolator
   end
 end
 
-if __FILE__ == $0 
-  require_relative "../model/point"
-  interpolator = Interpolator.new
-  puts interpolator.interpolate([[-1,2],[3,4],[40,20]].map{|p| Point.new p})
-end

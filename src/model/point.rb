@@ -3,6 +3,10 @@ class Point
   include Comparable
   attr_accessor :x, :y
 
+  def ==(otherPoint)
+    self.x == otherPoint.x and self.y == otherPoint.y    
+  end
+  
   def <=>(otherPoint)
     comp = self.x <=> otherPoint.x
     (comp==0)? (self.y<=>otherPoint.y) : comp
@@ -12,6 +16,7 @@ class Point
     @x = vector[0]
     @y = vector[1]
   end
+  
   def y
     @y.to_f
   end

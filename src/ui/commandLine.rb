@@ -1,9 +1,10 @@
+require_relative "../model/model"
+
 class CommandLine
   
-  def initialize interpolator = nil
+  def initialize 
   
-    @interpolator = interpolator
-    @points = []
+    @interpolator = Interpolator.new
     
   end
 
@@ -29,30 +30,23 @@ class CommandLine
   def parse_point string
 
       point = string.split(",").map {|c| Float(c)} 
-      raise :invalid_format if point.length!=2     
+      raise Exception.new(:invalid_point_format) if point.length!=2     
       Point.new(point)
   end
   
   def add params
     new_points = []
-      begin
-        params.each { |param| new_points << parse_point(param)}
-        @points << new_points
-        puts "Se agregaron los puntos: #{new_points*","}"
-      rescue
-        puts "Formato invalido"
-      end
+    params.each { |param| new_points << parse_point(param)}
+    new_points.each {|p| interpolator.add_point p}
+
   end
 
   
   def rm params
     points = []
-      begin
-        params.each { |param| points << parse_point(param)}
-        puts "No implementado. Elimina los puntos: #{points*","}"
-      rescue e    
-        puts "Formato invalido"
-      end  
+    params.each { |param| points << parse_point(param)}
+    points.each{|p| @interpolator.remove_point p}
+
   end
   
   
@@ -72,16 +66,16 @@ class CommandLine
   
   
   def calculate params
-    puts "No implementado. Evalua el polinomio en #{params}"  
+    puts "No implementado. Evalua el polinomio en #{parse_point params}" 
   end
   
   
   def points
-    puts @points.length > 0? "#{@points*",\n"}" : "No se ingresaron puntos."
+    puts @interpolator.points.length > 0? "#{@interpolator.points*",\n"}" : "No se ingresaron puntos."
   end
   
   def clear
-    @points = []
+    @interpolator = Interpolator.new
     puts "Se eliminaron todos los puntos."
   end
   
@@ -89,26 +83,32 @@ class CommandLine
     
     command, *params = input.split(/\s/)
     
-    case command
-      when /add/
-        add params
-      when /rm/, /remove/
-        rm params
-      when /interpolate/
-        interpolate 
-      when /calculate/
-        calculate params
-      when /points/
-        points 
-      when /clr/, /clear/
-        clear 
-      when /quit/, /exit/
-        abort("Adios!")
-      when /help/
-        help
-      else
-        puts "No existe el comando. Para ver los comandos, use help"
-    end   
+    begin
+      
+      case command
+        when /add/
+          add params
+        when /rm/, /remove/
+          rm params
+        when /interpolate/
+          interpolate 
+        when /calculate/
+          calculate params
+        when /points/
+          points 
+        when /clr/, /clear/
+          clear 
+        when /quit/, /exit/
+          abort("Adios!")
+        when /help/
+          help
+        else
+          puts "No existe el comando. Para ver los comandos, use help"
+      end   
+      
+    rescue Exception=>msg
+      puts msg.to_s.gsub "_", " "
+    end
   
   end
     
@@ -126,8 +126,3 @@ class CommandLine
 
 end
 
-#Si este es el archivo que se ejecuto (si le di run a este .rb y no a otro que lo incluye)
-if __FILE__ == $0 
-  require_relative "../model/point"
-  CommandLine.new.start
-end
