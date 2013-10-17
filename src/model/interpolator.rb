@@ -18,12 +18,12 @@ class Interpolator
   
   def deltas
     
-    deltas = [] << @points.map {|p| p.y}
+    deltas = [@points.map {|p| p.y}]
     n = @points.length
     for i in 1..n-1
       deltas[i]=[]
       for o in 0..n-i-1
-        deltas[i][o] = (deltas[i-1][o+1] - deltas[i-1][o]) / (@points[o+1].x - @points[o].x)   
+        deltas[i][o] = (deltas[i-1][o+1] - deltas[i-1][o]) / (@points[o+i].x - @points[o].x)   
       end
     end
     deltas
@@ -37,50 +37,10 @@ class Interpolator
 
   
   def interpolate 
-    first_column = calculateFirstColumn @points
-    return if first_column == nil
-    columns = [first_column]
-    column = calculateColumn first_column
-
-    while column
-      columns << column
-      column = calculateColumn column
-    end
-    columns
+    #calcula polinomios si es necesario. Retorna true o false segun si hubo q calcular.
   end
   
-  def calculateFirstColumn points
-    length = points.length
-    return nil if length < 2 #aseguramos que hay mas de dos puntos
-    array = []
-    for i in 0..length-2
-#      binding.pry
-      pointA = points[i]
-      pointB = points[i+1]
-      array[i] = interpolatePoints pointA, pointB
-    end
-    array
-  end
   
-  def interpolatePoints pointA, pointB
-    (pointA.y - pointB.y) / (pointA.x - pointB.x)
-  end
-  
-  def calculateColumn values
-    length = values.length
-    return nil if length < 2  #aseguramos que hay mas de dos valores
-    array = []
-    for i in 0..values.length-2
-      valueA = values[i]
-      valueB = values[i+1]
-      array[i] = interpolateValues valueA, valueB
-    end
-    array
-  end
-  
-  def interpolateValues valueA, valueB
-    (valueA - valueB) / 2
-  end
   
 end
 
