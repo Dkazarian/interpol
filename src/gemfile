@@ -1,8 +1,8 @@
 source 'http://rubygems.org'
 #debugging
-gem 'rdoc'
-gem 'pry'
-gem 'pry-nav'
+#gem 'rdoc'
+#gem 'pry'
+gem 'pry-nav' #deberia instalar las que faltan
 
 #testing
 gem 'rspec'

@@ -15,48 +15,47 @@ describe Interpolator do
     end
     
   end
+      
+  context "when using the example of page 85" do
   
-  context "when interpolating by progressive deltas" do
+    before :each do
+      @points = [
+                  p(1,1), 
+                  p(3,3), 
+                  p(4,13), 
+                  p(5,37), 
+                  p(7,151)
+              ]
+      @interpolator.points = @points
+      @interpolator.interpolate
+    end
     
-    context "using the example of page 85" do
+    it "should obtain the correct amount of deltas" do
     
-      before :each do
-        @points = [
-                    p(1,1), 
-                    p(3,3), 
-                    p(4,13), 
-                    p(5,37), 
-                    p(7,151)
-                ]
-        @interpolator.points = @points
-        @interpolator.interpolate
+      @deltas = @interpolator.deltas
+      @deltas.length.should == @points.length 
+      for i in 0..@deltas.length-1
+        @deltas[i].length.should == @points.length - i 
       end
-      
-      it "should obtain the correct amount of deltas" do
-      
-        @deltas = @interpolator.progressive_deltas
-        @deltas.length.should == @points.length - 1
-        for i in 0..@deltas.length-1
-          @deltas[i].length.should == @points.length - i - 1
-        end
-      end
+    end
 
-      it "should obtain the same deltas" do
-        
-        @interpolator.progressive_deltas.should == [ 
-                                                      [1,10,24,57],
-                                                        [3,7,11],
-                                                         [1,1],
-                                                          [0]
-                                                    ]        
-      end
+    it "should obtain the same deltas" do
       
-      it "should obtain the same polynomial" do
-        @interpolator.progressive_polynomial.should == "1 + 1.(x-1) + 3.(x-1)(x-3) + 1.(x-1)(x-3)(x-4)"
-      end
-      
+      @interpolator.deltas.should == [ 
+                                                   [1,3,13,37,151],
+                                                    [1,10,24,57],
+                                                      [3,7,11],
+                                                       [1,1],
+                                                        [0]
+                                                  ]        
+    end
+    
+    it "should obtain the same progressive polynomial" do
+      @interpolator.progressive_polynomial.should == "1 + 1.(x-1) + 3.(x-1)(x-3) + 1.(x-1)(x-3)(x-4)"
     end
     
   end
+    
+  
   
 end

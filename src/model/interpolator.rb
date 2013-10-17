@@ -16,18 +16,25 @@ class Interpolator
     @points<<point
   end
   
-  def progressive_deltas
-    [ 
-       [1, 10, 24, 57], 
-          [3, 7, 11], 
-            [1, 1], 
-              [0]
-              ]
+  def deltas
+    
+    deltas = [] << @points.map {|p| p.y}
+    n = @points.length
+    for i in 1..n-1
+      deltas[i]=[]
+      for o in 0..n-i-1
+        deltas[i][o] = (deltas[i-1][o+1] - deltas[i-1][o]) / (@points[o+1].x - @points[o].x)   
+      end
+    end
+    deltas
+    
   end
   
   def progressive_polynomial    
     "1 + 1.(x-1) + 3.(x-1)(x-3) + 1.(x-1)(x-3)(x-4)"
   end
+  
+
   
   def interpolate 
     first_column = calculateFirstColumn @points
@@ -74,5 +81,6 @@ class Interpolator
   def interpolateValues valueA, valueB
     (valueA - valueB) / 2
   end
+  
 end
 
