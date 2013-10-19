@@ -16,32 +16,32 @@ class CommandLine
     
     command, *params = input.split(/\s/)
     exit = false
-    begin
+    #begin
       
-      case command
-        when /add/
-          add params
-        when /rm/, /remove/
-          rm params
-        when /interpolate/
-          interpolate 
-        when /calculate/
-          calculate params
-        when /points/
-          points 
-        when /clr/, /clear/
-          clear 
-        when /quit/, /exit/
-          exit = true
-        when /help/
-          help
-        else
-          puts "No existe el comando. Para ver los comandos, use help"
-      end   
-      
-    rescue Exception=>msg
-      puts msg.to_s.gsub "_", " "
-    end
+    case command
+      when /add/
+        add params
+      when /rm/, /remove/
+        rm params
+      when /interpolate/
+        interpolate 
+      when /calculate/
+        calculate params
+      when /points/
+        points 
+      when /clr/, /clear/
+        clear 
+      when /quit/, /exit/
+        exit = true
+      when /help/
+        help
+      else
+        puts "No existe el comando. Para ver los comandos, use help"
+    end   
+    
+    #rescue Exception=>msg
+     # puts msg.to_s.gsub "_", " "
+    #end
   
     abort("Adios!") if exit
   end

@@ -1,7 +1,7 @@
 require_relative "model"
 
 class Interpolator
-  attr_accessor :points
+  
   
   def initialize
     @points = []
@@ -9,6 +9,10 @@ class Interpolator
   
   def points points
     @points = points.sort
+  end
+  
+  def points
+    @points
   end
   
   def remove_point point    
