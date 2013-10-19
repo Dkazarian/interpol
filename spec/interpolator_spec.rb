@@ -54,6 +54,13 @@ describe Interpolator do
       @interpolator.progressive_polynomial.should == "1 + 1.(x-1) + 3.(x-1)(x-3) + 1.(x-1)(x-3)(x-4)"
     end
     
+    it "adsdasdasd" do
+      
+      @interpolator.progressive_product(0).should == ""
+      @interpolator.progressive_product(1).should == "(x-1.0)"      
+      @interpolator.progressive_product(2).should == "(x-1.0)(x-3.0)"      
+      @interpolator.progressive_product(3).should == "(x-1.0)(x-3.0)(x-4.0)"   
+    end
   end
     
   

@@ -2,30 +2,22 @@ require_relative "model"
 
 class Interpolator
   
-  
+  attr_accessor :points
   def initialize
     @points = []
   end
   
-  def points points
-    @points = points.sort
-  end
-  
-  def points
-    @points
-  end
-  
+ 
   def remove_point point    
     @points.delete point
   end
   
   def add_point point
     @points<<point
-    @points.sort
   end
   
   def deltas
-    
+    points.sort
     deltas = [@points.map {|p| p.y}]
     n = @points.length
     for i in 1..n-1
@@ -36,6 +28,15 @@ class Interpolator
     end
     deltas
     
+  end
+  
+  
+  def progressive_product k
+    str = ""
+    for i in 0..k-1
+      str+= "(x-#{points[i].x})"
+    end
+    str
   end
   
   def progressive_polynomial    
