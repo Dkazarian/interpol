@@ -90,7 +90,7 @@ class CommandLine
   def add params
     new_points = []
     params.each { |param| new_points << parse_point(param)}
-    new_points.each {|p| interpolator.add_point p}
+    new_points.each {|p| @interpolator.add_point p}
     interpolate if @recalculate
   end
 
