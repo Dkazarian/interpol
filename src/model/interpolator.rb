@@ -39,22 +39,41 @@ class Interpolator
     str
   end
   
+  def regressive_product k
+    str = ""
+    for i in 0..k-1
+      str+= "(x-#{points[points.length-1-i].x})"
+    end
+    str
+  end
+  
   def progressive_deltas
     deltas.map{|column| column.first}
   end
   
-  def progressive_polynomial
+  def regressive_deltas
+    deltas.map{|column| column.last}
+  end
+  
+  def polynomial_string deltas, product
     str = ""
-    deltas = progressive_deltas
     size = deltas.length
     for i in 0..size-1
       delta = deltas[i]
       if delta != 0
-        str += "#{delta}#{progressive_product i}"
+        str += "#{delta}#{send product, i}"
         str += " + " if i < size-2
       end
     end
     str
+  end
+  
+  def progressive_polynomial
+    polynomial_string progressive_deltas, :progressive_product
+  end
+  
+  def regressive_polynomial
+    polynomial_string regressive_deltas, :regressive_product
   end
   
 

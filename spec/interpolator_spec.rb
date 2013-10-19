@@ -53,6 +53,9 @@ describe Interpolator do
     it "should obtain the same progressive polynomial" do
       @interpolator.progressive_polynomial.should == "1.0 + 1.0(x-1.0) + 3.0(x-1.0)(x-3.0) + 1.0(x-1.0)(x-3.0)(x-4.0)"
     end
+    it "should obtain the same regressive polynomial" do
+      @interpolator.regressive_polynomial.should == "151.0 + 57.0(x-7.0) + 11.0(x-7.0)(x-5.0) + 1.0(x-7.0)(x-5.0)(x-4.0)"
+    end
     
     it "adsdasdasd" do
       
@@ -60,6 +63,13 @@ describe Interpolator do
       @interpolator.progressive_product(1).should == "(x-1.0)"      
       @interpolator.progressive_product(2).should == "(x-1.0)(x-3.0)"      
       @interpolator.progressive_product(3).should == "(x-1.0)(x-3.0)(x-4.0)"   
+    end
+    
+    it "adsdasdasd2" do
+      @interpolator.regressive_product(0).should == ""
+      @interpolator.regressive_product(1).should == "(x-7.0)"      
+      @interpolator.regressive_product(2).should == "(x-7.0)(x-5.0)"      
+      @interpolator.regressive_product(3).should == "(x-7.0)(x-5.0)(x-4.0)"
     end
   end
     
