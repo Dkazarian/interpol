@@ -33,7 +33,7 @@ describe Interpolator do
     it "should obtain the correct amount of deltas" do
     
       @deltas = @interpolator.deltas
-      @deltas.length.should == @points.length 
+      @deltas.length.should eq @points.length 
       for i in 0..@deltas.length-1
         @deltas[i].length.should == @points.length - i 
       end
@@ -50,27 +50,34 @@ describe Interpolator do
                                                   ]        
     end
     
-    it "should obtain the same progressive polynomial" do
-      @interpolator.progressive_polynomial.should == "1.0 + 1.0(x-1.0) + 3.0(x-1.0)(x-3.0) + 1.0(x-1.0)(x-3.0)(x-4.0)"
-    end
-    it "should obtain the same regressive polynomial" do
-      @interpolator.regressive_polynomial.should == "151.0 + 57.0(x-7.0) + 11.0(x-7.0)(x-5.0) + 1.0(x-7.0)(x-5.0)(x-4.0)"
-    end
-    
-    it "adsdasdasd" do
+    context "progressive polynomial" do
+      it "should obtain the same polynomial" do
+        @interpolator.progressive_polynomial.should eq "1 + 1(x - 1) + 3(x - 1)(x - 3) + 1(x - 1)(x - 3)(x - 4)"
+      end          
       
-      @interpolator.progressive_product(0).should == ""
-      @interpolator.progressive_product(1).should == "(x-1.0)"      
-      @interpolator.progressive_product(2).should == "(x-1.0)(x-3.0)"      
-      @interpolator.progressive_product(3).should == "(x-1.0)(x-3.0)(x-4.0)"   
+      it "should obtain the correct coeficients" do      
+        @interpolator.progressive_product(0).should eq ""
+        @interpolator.progressive_product(1).should eq "(x - 1)"      
+        @interpolator.progressive_product(2).should eq "(x - 1)(x - 3)"      
+        @interpolator.progressive_product(3).should eq "(x - 1)(x - 3)(x - 4)"   
+      end
     end
     
-    it "adsdasdasd2" do
-      @interpolator.regressive_product(0).should == ""
-      @interpolator.regressive_product(1).should == "(x-7.0)"      
-      @interpolator.regressive_product(2).should == "(x-7.0)(x-5.0)"      
-      @interpolator.regressive_product(3).should == "(x-7.0)(x-5.0)(x-4.0)"
-    end
+    context "regressive polynomial" do
+      it "should obtain the same polynomial" do
+        @interpolator.regressive_polynomial.should eq "151 + 57(x - 7) + 11(x - 7)(x - 5) + 1(x - 7)(x - 5)(x - 4)"
+      end
+      
+      it "should obtain the correct regressive coeficients" do
+        @interpolator.regressive_product(0).should eq ""
+        @interpolator.regressive_product(1).should eq "(x - 7)"      
+        @interpolator.regressive_product(2).should eq "(x - 7)(x - 5)"      
+        @interpolator.regressive_product(3).should eq "(x - 7)(x - 5)(x - 4)"
+      end
+      
+    end 
+    
+
   end
     
   

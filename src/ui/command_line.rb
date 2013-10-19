@@ -106,8 +106,10 @@ class CommandLine
   
   def interpolate 
      puts "Los polinomios no debieron recalcularse" unless @interpolator.interpolate 
-     puts @interpolator.progressive_polynomial
-     puts @interpolator.regressive_polynomial
+     puts "Progresivo: "
+     puts "p(x) = " + @interpolator.progressive_polynomial
+     puts "Regresivo: "
+     puts "p(x) = " + @interpolator.regressive_polynomial
      @recalculate = true
   end
   

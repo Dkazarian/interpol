@@ -7,7 +7,15 @@ class Interpolator
     @points = []
   end
   
- 
+  def format p
+    if Integer(p)==p
+      Integer(p)
+    else
+      rounded = p.round 2
+      (rounded == 0)? p : rounded
+    end
+  end
+  
   def remove_point point    
     @points.delete point
   end
@@ -16,7 +24,7 @@ class Interpolator
     @points<<point
   end
   
-  def deltas
+  def calculate_deltas
     points.sort
     deltas = [@points.map {|p| p.y}]
     n = @points.length
@@ -27,14 +35,17 @@ class Interpolator
       end
     end
     deltas
-    
+  end
+  
+  def deltas
+    @deltas
   end
   
   
   def progressive_product k
     str = ""
     for i in 0..k-1
-      str+= "(x-#{points[i].x})"
+      str+= "(x - #{format points[i].x})"
     end
     str
   end
@@ -42,30 +53,28 @@ class Interpolator
   def regressive_product k
     str = ""
     for i in 0..k-1
-      str+= "(x-#{points[points.length-1-i].x})"
+      str+= "(x - #{format points[points.length-1-i].x})"
     end
     str
   end
   
   def progressive_deltas
-    deltas.map{|column| column.first}
+    @deltas.map{|column| column.first}
   end
   
   def regressive_deltas
-    deltas.map{|column| column.last}
+    @deltas.map{|column| column.last}
   end
   
   def polynomial_string deltas, product
-    str = ""
-    size = deltas.length
-    for i in 0..size-1
+    terms = []
+    for i in 0..deltas.length-1
       delta = deltas[i]
       if delta != 0
-        str += "#{delta}#{send product, i}"
-        str += " + " if i < size-2
+        terms << "#{format delta}#{send product, i}" 
       end
     end
-    str
+    (terms*" + ").gsub("- -","+ ").gsub("+ -","- ")
   end
   
   def progressive_polynomial
@@ -79,8 +88,9 @@ class Interpolator
 
   
   def interpolate 
-    #calcula polinomios si es necesario. Retorna true o false segun si hubo q calcular.
+    @deltas = calculate_deltas 
   end
+  
   
   
   
