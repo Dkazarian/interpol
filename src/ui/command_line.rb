@@ -15,7 +15,7 @@ class CommandLine
   def exec_command input
     
     command, *params = input.split(/\s/)
-    
+    exit = false
     begin
       
       case command
@@ -32,7 +32,7 @@ class CommandLine
         when /clr/, /clear/
           clear 
         when /quit/, /exit/
-          abort("Adios!")
+          exit = true
         when /help/
           help
         else
@@ -43,6 +43,7 @@ class CommandLine
       puts msg.to_s.gsub "_", " "
     end
   
+    abort("Adios!") if exit
   end
     
   def start
