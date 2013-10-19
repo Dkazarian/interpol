@@ -51,7 +51,7 @@ describe Interpolator do
     end
     
     it "should obtain the same progressive polynomial" do
-      @interpolator.progressive_polynomial.should == "1 + 1.(x-1) + 3.(x-1)(x-3) + 1.(x-1)(x-3)(x-4)"
+      @interpolator.progressive_polynomial.should == "1.0 + 1.0(x-1.0) + 3.0(x-1.0)(x-3.0) + 1.0(x-1.0)(x-3.0)(x-4.0)"
     end
     
     it "adsdasdasd" do

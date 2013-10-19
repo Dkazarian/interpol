@@ -39,8 +39,22 @@ class Interpolator
     str
   end
   
-  def progressive_polynomial    
-    "1 + 1.(x-1) + 3.(x-1)(x-3) + 1.(x-1)(x-3)(x-4)"
+  def progressive_deltas
+    deltas.map{|column| column.first}
+  end
+  
+  def progressive_polynomial
+    str = ""
+    deltas = progressive_deltas
+    size = deltas.length
+    for i in 0..size-1
+      delta = deltas[i]
+      if delta != 0
+        str += "#{delta}#{progressive_product i}"
+        str += " + " if i < size-2
+      end
+    end
+    str
   end
   
 
