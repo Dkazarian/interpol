@@ -52,7 +52,7 @@ describe Interpolator do
     
     context "progressive polynomial" do
       it "should obtain the same polynomial" do
-        @interpolator.progressive_polynomial.should eq "1 + 1(x - 1) + 3(x - 1)(x - 3) + 1(x - 1)(x - 3)(x - 4)"
+        @interpolator.progressive_polynomial.should eq "1 + (x - 1) + 3(x - 1)(x - 3) + (x - 1)(x - 3)(x - 4)"
       end          
       
       it "should obtain the correct coeficients" do      
@@ -65,7 +65,7 @@ describe Interpolator do
     
     context "regressive polynomial" do
       it "should obtain the same polynomial" do
-        @interpolator.regressive_polynomial.should eq "151 + 57(x - 7) + 11(x - 7)(x - 5) + 1(x - 7)(x - 5)(x - 4)"
+        @interpolator.regressive_polynomial.should eq "151 + 57(x - 7) + 11(x - 7)(x - 5) + (x - 7)(x - 5)(x - 4)"
       end
       
       it "should obtain the correct regressive coeficients" do

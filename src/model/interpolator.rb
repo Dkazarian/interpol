@@ -45,7 +45,7 @@ class Interpolator
   def progressive_product k
     str = ""
     for i in 0..k-1
-      str+= "(x - #{format points[i].x})"
+      str+= (points[i].x==0)?"x":"(x - #{format points[i].x})"
     end
     str
   end
@@ -69,9 +69,8 @@ class Interpolator
   def polynomial_string deltas, product
     terms = []
     for i in 0..deltas.length-1
-      delta = deltas[i]
-      if delta != 0
-        terms << "#{format delta}#{send product, i}" 
+      if deltas[i] != 0
+        terms << "#{format deltas[i] if deltas[i]!=1 || i==0}#{send product, i}" 
       end
     end
     (terms*" + ").gsub("- -","+ ").gsub("+ -","- ")
