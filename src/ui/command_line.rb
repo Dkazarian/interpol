@@ -8,6 +8,7 @@ class CommandLine
 
   def reset
     @interpolator = Interpolator.new
+    trace
     @recalculate = false
   end
   
@@ -33,15 +34,13 @@ class CommandLine
         clear 
       when /quit/, /exit/
         exit = true
+      when /trace/
+        trace
       when /help/
         help
       else
         puts "No existe el comando. Para ver los comandos, use help"
     end   
-    
-    #rescue Exception=>msg
-     # puts msg.to_s.gsub "_", " "
-    #end
   
     abort("Adios!") if exit
   end
@@ -52,7 +51,11 @@ class CommandLine
     
     loop do 
       print "\n> "
-      exec_command gets.chop
+      begin
+        exec_command gets.chop 
+      rescue ArgumentError,TypeError=>e
+        puts "Formato invalido: "+ e.to_s
+      end
     end
       
   end   
@@ -80,11 +83,12 @@ class CommandLine
     
   end
     
-
+  def trace
+    @interpolator.verbose =  @interpolator.verbose^true
+  end
   def parse_point string
-
       point = string.split(",").map {|c| Float(c)} 
-      raise Exception.new(:invalid_point_format) if point.length!=2     
+      raise ArgumentError.new("El formato de los datos debe ser x,y") if point.length!=2     
       Point.new(point)
   end
   
@@ -92,35 +96,42 @@ class CommandLine
     new_points = []
     params.each { |param| new_points << parse_point(param)}
     new_points.each {|p| @interpolator.add_point p}
+    points
     interpolate if @recalculate
   end
 
   
   def rm params
-    points = []
-    params.each { |param| points << parse_point(param)}
-    points.each{|p| @interpolator.remove_point p}
+    rm_points = []
+    params.each { |param| rm_points << parse_point(param)}
+    rm_points.each{|p| @interpolator.remove_point p}
+    points
     interpolate if @recalculate
   end
-  
-  
+    
   def interpolate 
-     puts "Los polinomios no debieron recalcularse" unless @interpolator.interpolate 
-     puts "Progresivo: "
-     puts "p(x) = " + @interpolator.progressive_polynomial
-     puts "Regresivo: "
-     puts "p(x) = " + @interpolator.regressive_polynomial
+     puts ""
+     if @interpolator.interpolate
+       puts "*"*20
+       puts "Progresivo: "
+       puts "p(x) = " + @interpolator.progressive_polynomial.to_s
+       puts "Regresivo: "
+       puts "p(x) = " + @interpolator.regressive_polynomial.to_s
+       puts "*"*20
+     else
+       puts "Los polinomios no debieron recalcularse" 
+     end
      @recalculate = true
   end
   
   
   def calculate params
-    puts "No implementado. Evalua el polinomio en #{parse_point params}" 
+    puts @interpolator.calculate(Float(params[0])) 
   end
   
   
   def points
-    puts @interpolator.points.length > 0? "#{@interpolator.points*",\n"}" : "No se ingresaron puntos."
+    puts @interpolator.points.length > 0? "#{@interpolator.points*"\n"}" : "No se ingresaron puntos."
   end
   
   def clear
