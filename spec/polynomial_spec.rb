@@ -15,6 +15,7 @@ describe Polynomial do
     it "should return -8" do
       Polynomial.new("2+3*x+(x-3)+5*(x-1)*(x-5)+1").evaluate(3).should ==-8
     end
-  end
+  end  
+
 
 end

@@ -2,30 +2,31 @@ require_relative "model"
 
 class Interpolator
   
-  attr_accessor :points
+  attr_accessor :points, :verbose
+  
   def initialize
     @points = []
+    @verbose = false
   end
   
-  def format p
-    if Integer(p)==p
-      Integer(p)
-    else
-      rounded = p.round 2
-      (rounded == 0)? p : rounded
-    end
+  def trace msj
+    puts msj if @verbose    
   end
-  
+    
   def remove_point point    
     @points.delete point
   end
   
-  def add_point point
-    @points<<point
+  def add_point point    
+    @points = @points.delete_if {|p| p.x == point.x}      
+    @points<<point    
   end
   
   def calculate_deltas
-    points.sort
+    trace("Ordenando puntos.")
+    points.sort!
+    
+    trace("Construyendo tabla de diferencias divididas.")
     deltas = [@points.map {|p| p.y}]
     n = @points.length
     for i in 1..n-1
@@ -45,7 +46,7 @@ class Interpolator
   def progressive_product k
     str = ""
     for i in 0..k-1
-      str+= (points[i].x==0)?"x":"(x - #{format points[i].x})"
+      str+= (points[i].x==0)?"x":"(x - #{points[i].x})"
     end
     str
   end
@@ -53,7 +54,7 @@ class Interpolator
   def regressive_product k
     str = ""
     for i in 0..k-1
-      str+= "(x - #{format points[points.length-1-i].x})"
+      str+= "(x - #{points[points.length-1-i].x})"
     end
     str
   end
@@ -70,28 +71,57 @@ class Interpolator
     terms = []
     for i in 0..deltas.length-1
       if deltas[i] != 0
-        terms << "#{format deltas[i] if deltas[i]!=1 || i==0}#{send product, i}" 
+        terms << "#{deltas[i]}#{send product, i}" 
       end
     end
-    (terms*" + ").gsub("- -","+ ").gsub("+ -","- ")
+    (terms*" + ").gsub("- -","+ ").gsub("+ -","- ").gsub("(","*(")    
   end
   
   def progressive_polynomial
-    polynomial_string progressive_deltas, :progressive_product
+    @progressive_polynomial
   end
   
   def regressive_polynomial
-    polynomial_string regressive_deltas, :regressive_product
+    @regressive_polynomial
   end
-  
-
-  
+    
   def interpolate 
-    @deltas = calculate_deltas 
+    
+    if must_recalculate 
+      @deltas = calculate_deltas 
+      
+      trace("Construyendo polinomio progresivo.")
+      @progressive_polynomial = Polynomial.new polynomial_string(progressive_deltas, :progressive_product)
+      
+      
+      trace("Construyendo polinomio regresivo.")
+      @regressive_polynomial = Polynomial.new polynomial_string(regressive_deltas, :regressive_product)
+      
+    end   
+ 
   end
   
   
+  def must_recalculate
+    if @progressive_polynomial and @regressive_polynomial
+       points.detect {|point| not @progressive_polynomial.includes? point}
+    else
+      true
+    end
+  end 
   
+  def calculate x    
+    polynomial =  @progressive_polynomial || @regressive_polynomial
+    if @points and not @points.empty?
+      unless polynomial
+        interpolate
+        polynomial =  @progressive_polynomial || @regressive_polynomial   
+      end
+      polynomial.evaluate x 
+    else
+      raise "No se han ingresado suficientes puntos." #cambiar por exception
+    end
+  end
   
 end
 

@@ -52,27 +52,27 @@ describe Interpolator do
     
     context "progressive polynomial" do
       it "should obtain the same polynomial" do
-        @interpolator.progressive_polynomial.should eq "1 + (x - 1) + 3(x - 1)(x - 3) + (x - 1)(x - 3)(x - 4)"
+        @interpolator.progressive_polynomial.to_s.should eq "1 + (x - 1) + 3(x - 1)(x - 3) + (x - 1)(x - 3)(x - 4)"
       end          
       
       it "should obtain the correct coeficients" do      
         @interpolator.progressive_product(0).should eq ""
-        @interpolator.progressive_product(1).should eq "(x - 1)"      
-        @interpolator.progressive_product(2).should eq "(x - 1)(x - 3)"      
-        @interpolator.progressive_product(3).should eq "(x - 1)(x - 3)(x - 4)"   
+        @interpolator.progressive_product(1).should eq "(x - 1.0)"      
+        @interpolator.progressive_product(2).should eq "(x - 1.0)(x - 3.0)"      
+        @interpolator.progressive_product(3).should eq "(x - 1.0)(x - 3.0)(x - 4.0)"   
       end
     end
     
     context "regressive polynomial" do
       it "should obtain the same polynomial" do
-        @interpolator.regressive_polynomial.should eq "151 + 57(x - 7) + 11(x - 7)(x - 5) + (x - 7)(x - 5)(x - 4)"
+        @interpolator.regressive_polynomial.to_s.should eq "151 + 57(x - 7) + 11(x - 7)(x - 5) + (x - 7)(x - 5)(x - 4)"
       end
       
       it "should obtain the correct regressive coeficients" do
         @interpolator.regressive_product(0).should eq ""
-        @interpolator.regressive_product(1).should eq "(x - 7)"      
-        @interpolator.regressive_product(2).should eq "(x - 7)(x - 5)"      
-        @interpolator.regressive_product(3).should eq "(x - 7)(x - 5)(x - 4)"
+        @interpolator.regressive_product(1).should eq "(x - 7.0)"      
+        @interpolator.regressive_product(2).should eq "(x - 7.0)(x - 5.0)"      
+        @interpolator.regressive_product(3).should eq "(x - 7.0)(x - 5.0)(x - 4.0)"
       end
       
     end 
