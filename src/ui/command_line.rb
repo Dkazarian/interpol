@@ -1,5 +1,3 @@
-require_relative "../model/model"
-
 class CommandLine
   
   def initialize 

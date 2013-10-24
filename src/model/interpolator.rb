@@ -1,5 +1,3 @@
-require_relative "model"
-
 class Interpolator
   
   attr_accessor :points, :verbose

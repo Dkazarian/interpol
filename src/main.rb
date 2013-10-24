@@ -1,5 +1,6 @@
 require_relative "ui/command_line"
-#require 'pry'
+require_relative "model/interpolator"
+require_relative "model/point"
+require_relative "model/polynomial"
 
 CommandLine.new.start
-
