@@ -1,7 +1,15 @@
-require "/home/pablo/git/interpol/src/model/interpolator"
-require "/home/pablo/git/interpol/src/model/point"
-require "/home/pablo/git/interpol/src/model/polynomial"
+unless Kernel.respond_to?(:require_relative)
+  module Kernel
+    def require_relative(path)
+      require File.join(File.dirname(caller[0]), path.to_str)
+    end
+  end
+end
 
-require "/home/pablo/git/interpol/src/gui/input.rb"
+require_relative "model/interpolator"
+require_relative "model/point"
+require_relative "model/polynomial"
+
+require_relative "gui/input.rb"
 
 Input.new.start
