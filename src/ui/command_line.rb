@@ -86,6 +86,7 @@ class CommandLine
   def trace
     @interpolator.verbose =  @interpolator.verbose^true
   end
+  
   def parse_point string
       point = string.split(",").map {|c| Float(c)} 
       raise ArgumentError.new("El formato de los datos debe ser x,y") if point.length!=2     
