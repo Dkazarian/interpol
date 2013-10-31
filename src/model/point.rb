@@ -28,6 +28,25 @@ class Point
   def to_s
     "(#{self.x},#{self.y})"
   end
+
+  def self.parse string
+      point = string.split(",").map {|c| Float(c)} 
+      raise PointFormatException.new if point.length!=2     
+      Point.new(point)
+  rescue 
+    raise PointFormatException.new  
+  end
+
+  def self.parse_list list
+    list.map { |e| Point.parse(e)}
+  end
+
+end
+
+class PointFormatException < Exception
+  def initialize
+    super "El formato de los datos debe ser x,y"
+  end
 end
 
 def p x,y

@@ -2,60 +2,32 @@ require_relative "../model/model"
 
 class CommandLine
   
+  #Constructor
   def initialize 
      reset
+     cmd_trace
   end
 
   def reset
     @interpolator = Interpolator.new
-    trace
     @recalculate = false
   end
   
-  
   def exec_command input
-    
     command, *params = input.split(/\s/)
-    exit = false
-    #begin
-      
-    case command
-      when /add/
-        add params
-      when /rm/, /remove/
-        rm params
-      when /interpolate/
-        interpolate 
-      when /calculate/
-        calculate params
-      when /points/
-        points 
-      when /clr/, /clear/
-        clear 
-      when /quit/, /exit/
-        exit = true
-      when /trace/
-        trace
-      when /help/
-        help
-      else
-        puts "No existe el comando. Para ver los comandos, use help"
-    end   
-  
-    abort("Adios!") if exit
-  end
-    
+    (params.empty?)? send("cmd_#{command}") : send("cmd_#{command}", params)
+  rescue NoMethodError => e
+    raise unless e.message.include?("cmd_#{command}") 
+    puts "No existe el comando #{command}. Para ver los comandos, use help"
+  end       
+
   def start
-      
-    help
+
+    cmd_help
     
-    loop do 
+    until @exit
       print "\n> "
-      begin
-        exec_command gets.chop 
-      rescue ArgumentError,TypeError=>e
-        puts "Formato invalido: "+ e.to_s
-      end
+      exec_command gets.chop 
     end
       
   end   
@@ -64,8 +36,11 @@ class CommandLine
   #########################################
   #               COMMANDS                #
   #########################################
-  
-  def help
+  def cmd_quit 
+    @exit = true
+  end
+
+  def cmd_help  
     
     puts "="*40
     puts "Comandos disponibles"
@@ -83,34 +58,26 @@ class CommandLine
     
   end
     
-  def trace
+  def cmd_trace  
     @interpolator.verbose =  @interpolator.verbose^true
-  end
+  end  
   
-  def parse_point string
-      point = string.split(",").map {|c| Float(c)} 
-      raise ArgumentError.new("El formato de los datos debe ser x,y") if point.length!=2     
-      Point.new(point)
-  end
+  def cmd_add params
+    forall_points params, :add_point
+  end 
   
-  def add params
-    new_points = []
-    params.each { |param| new_points << parse_point(param)}
-    new_points.each {|p| @interpolator.add_point p}
-    points
-    interpolate if @recalculate
+  def cmd_rm params
+    forall_points params, :remove_point
+  end 
+    
+  def forall_points list, method
+    Point.parse_list(list).each {|p| @interpolator.send(method,p)}
+    @recalculate? cmd_interpolate : cmd_points
+  rescue PointFormatException => e
+    puts e.message
   end
 
-  
-  def rm params
-    rm_points = []
-    params.each { |param| rm_points << parse_point(param)}
-    rm_points.each{|p| @interpolator.remove_point p}
-    points
-    interpolate if @recalculate
-  end
-    
-  def interpolate 
+  def cmd_interpolate  
      puts ""
      if @interpolator.interpolate
        puts "*"*20
@@ -126,19 +93,22 @@ class CommandLine
   end
   
   
-  def calculate params
+  def cmd_calculate params
     puts @interpolator.calculate(Float(params[0])) 
-  end
+  rescue PointFormatException => e
+    puts e.message
+  end 
   
   
-  def points
+  def cmd_points 
     puts @interpolator.points.length > 0? "#{@interpolator.points*"\n"}" : "No se ingresaron puntos."
   end
   
-  def clear
+  def cmd_clear
     reset
     puts "Se eliminaron todos los puntos."
   end
   
 end
+
 
