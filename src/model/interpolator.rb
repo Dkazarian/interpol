@@ -13,6 +13,7 @@ class Interpolator
     
   def remove_point point    
     @points.delete point
+    @point_removed = true
   end
   
   def add_point point    
@@ -101,10 +102,11 @@ class Interpolator
   
   
   def must_recalculate
-    if @progressive_polynomial and @regressive_polynomial
-       points.detect {|point| not @progressive_polynomial.includes? point}
+    if @point_removed or not @progressive_polynomial or not @regressive_polynomial
+      @point_removed = false
+      return true
     else
-      true
+       points.detect {|point| not @progressive_polynomial.includes? point}
     end
   end 
   

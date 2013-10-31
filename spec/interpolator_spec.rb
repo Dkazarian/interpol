@@ -79,6 +79,13 @@ describe Interpolator do
     
 
   end
+
+  it "should not explode when doing this thing that mades it explode(?)" do
+    [p(1,4), p(0,5), p(123,4)].each {|p| @interpolator.add_point p}
+    @interpolator.interpolate
+    @interpolator.add_point p(0,4)
+    @interpolator.interpolate
+  end
     
   
   
