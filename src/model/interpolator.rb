@@ -21,6 +21,15 @@ class Interpolator
     @points<<point    
   end
   
+  #Calcula la tabla de deltas y la almacena en una lista de listas
+  #Ejemplo:
+  #                  [
+  #                    [1,3,13,37,151],
+  #                     [1,10,24,57],
+  #                       [3,7,11],
+  #                        [1,1],
+  #                         [0]
+  #                                  ]      
   def calculate_deltas
     trace("Ordenando puntos.")
     points.sort!
@@ -41,19 +50,22 @@ class Interpolator
     @deltas
   end
   
-  
+  #Arma los (x-a)(x-b)(x-c) para el termino k
   def progressive_product k
     str = ""
     for i in 0..k-1
-      str+= (points[i].x==0)?"x":"(x - #{points[i].x})"
+      r = points[i].x
+      str+= (r==0)? "x" : "(x - #{r})" 
     end
     str
   end
   
+  #Arma los (x-c)(x-b)(x-a) para el termino k
   def regressive_product k
     str = ""
     for i in 0..k-1
-      str+= "(x - #{points[points.length-1-i].x})"
+      r = points[points.length-1-i].x
+      str+= (r==0)? "x" : "(x - #{r})"
     end
     str
   end
@@ -66,6 +78,7 @@ class Interpolator
     @deltas.map{|column| column.last}
   end
   
+  #Arma el string del polinomio
   def polynomial_string deltas, product
     terms = []
     for i in 0..deltas.length-1
@@ -73,7 +86,7 @@ class Interpolator
         terms << "#{deltas[i]}#{send product, i}" 
       end
     end
-    (terms*" + ").gsub("- -","+ ").gsub("+ -","- ").gsub("(","*(")    
+    (terms*" + ").gsub("- -","+ ").gsub("+ -","- ")    
   end
   
   def progressive_polynomial
@@ -84,6 +97,7 @@ class Interpolator
     @regressive_polynomial
   end
     
+  #Calcula los polinomios si es necesario
   def interpolate 
     
     if must_recalculate 
@@ -100,7 +114,8 @@ class Interpolator
  
   end
   
-  
+  #Los polinomios deben calcularse si se quitaron puntos
+  #si no estan calculados o si se agregaron puntos fuera de los actuales
   def must_recalculate
     if @point_removed or not @progressive_polynomial or not @regressive_polynomial
       @point_removed = false
@@ -110,7 +125,9 @@ class Interpolator
     end
   end 
   
-  def calculate x    
+  #Evalua el punto en uno de los polinomios si estan calculados
+  #Si no estan calculados y hay puntos los calcula
+  def evaluate x    
     polynomial =  @progressive_polynomial || @regressive_polynomial
     if @points and not @points.empty?
       unless polynomial
