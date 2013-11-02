@@ -58,8 +58,8 @@ describe Interpolator do
       it "should obtain the correct coeficients" do      
         @interpolator.progressive_product(0).should eq ""
         @interpolator.progressive_product(1).should eq "(x - 1.0)"      
-        @interpolator.progressive_product(2).should eq "(x - 1.0)(x - 3.0)"      
-        @interpolator.progressive_product(3).should eq "(x - 1.0)(x - 3.0)(x - 4.0)"   
+        @interpolator.progressive_product(2).should eq "(x - 1.0)*(x - 3.0)"      
+        @interpolator.progressive_product(3).should eq "(x - 1.0)*(x - 3.0)*(x - 4.0)"   
       end
     end
     
@@ -71,8 +71,8 @@ describe Interpolator do
       it "should obtain the correct regressive coeficients" do
         @interpolator.regressive_product(0).should eq ""
         @interpolator.regressive_product(1).should eq "(x - 7.0)"      
-        @interpolator.regressive_product(2).should eq "(x - 7.0)(x - 5.0)"      
-        @interpolator.regressive_product(3).should eq "(x - 7.0)(x - 5.0)(x - 4.0)"
+        @interpolator.regressive_product(2).should eq "(x - 7.0)*(x - 5.0)"      
+        @interpolator.regressive_product(3).should eq "(x - 7.0)*(x - 5.0)*(x - 4.0)"
       end
       
     end 
