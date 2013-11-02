@@ -1,20 +1,23 @@
 class Point
 
   include Comparable
-  attr_accessor :x, :y
 
+  def initialize x,y
+    @x = x
+    @y = y
+  end
+
+
+  #Sobreescribe el == para que sepa comparar Point
   def ==(otherPoint)
     self.x == otherPoint.x and self.y == otherPoint.y    
   end
   
+  #Sobreescribe la funcion de ordenamiento
+  #usada por el metodo order de las colecciones.
   def <=>(otherPoint)
     comp = self.x <=> otherPoint.x
     (comp==0)? (self.y<=>otherPoint.y) : comp
-  end
-  
-  def initialize vector
-    @x = vector[0]
-    @y = vector[1]
   end
   
   def y
@@ -29,6 +32,13 @@ class Point
     "(#{self.x},#{self.y})"
   end
 
+
+  ##########################################
+  #             CLASS METHODS              #
+  ##########################################
+
+
+  #Separa un string "x,y" en dos floats y retorna un Point
   def self.parse string
       point = string.split(",").map {|c| Float(c)} 
       raise PointFormatException.new if point.length!=2     
@@ -49,6 +59,8 @@ class PointFormatException < Exception
   end
 end
 
+#Funcion cortita para poder poner p(x,y) en vez 
+#tener que hacer Point.new(x,y)
 def p x,y
-  Point.new([x,y])
+  Point.new(x,y)
 end
