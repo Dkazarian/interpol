@@ -81,11 +81,11 @@ class Interpolator
   #Arma el string del polinomio
   def polynomial_string deltas, product
     terms = []
-    for i in 0..deltas.length-1
-      if deltas[i] != 0
-        terms << "#{deltas[i]}#{send product, i}" 
-      end
+
+    for i in 0..deltas.length-1      
+      terms << "#{deltas[i]}#{send product, i}" unless deltas[i] == 0      
     end
+
     (terms*" + ").gsub("- -","+ ").gsub("+ -","- ")    
   end
   
@@ -108,36 +108,28 @@ class Interpolator
       
       
       trace("Construyendo polinomio regresivo.")
-      @regressive_polynomial = Polynomial.new polynomial_string(regressive_deltas, :regressive_product)
-      
+      @regressive_polynomial = Polynomial.new polynomial_string(regressive_deltas, :regressive_product)      
     end   
  
   end
   
   #Los polinomios deben calcularse si se quitaron puntos
   #si no estan calculados o si se agregaron puntos fuera de los actuales
-  def must_recalculate
-    if @point_removed or not @progressive_polynomial or not @regressive_polynomial
+  def must_recalculate    
+
+    if @point_removed or not @progressive_polynomial
       @point_removed = false
       return true
-    else
-       points.detect {|point| not @progressive_polynomial.includes? point}
-    end
+    end    
+
+    points.detect {|point| not @progressive_polynomial.includes? point}    
+
   end 
   
-  #Evalua el punto en uno de los polinomios si estan calculados
-  #Si no estan calculados y hay puntos los calcula
+  #Evalua el punto en uno de los polinomios. Interpola si no estaba calculado.
   def evaluate x    
-    polynomial =  @progressive_polynomial || @regressive_polynomial
-    if @points and not @points.empty?
-      unless polynomial
-        interpolate
-        polynomial =  @progressive_polynomial || @regressive_polynomial   
-      end
-      polynomial.evaluate x 
-    else
-      raise "No se han ingresado suficientes puntos." #cambiar por exception
-    end
+    interpolate unless @progressive_polynomial
+    @progressive_polynomial.evaluate x     
   end
   
 end
