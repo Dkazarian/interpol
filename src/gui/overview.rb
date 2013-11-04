@@ -10,6 +10,9 @@ import javax.swing.JMenu
 import java.lang.System
 
 
+require_relative "window_add.rb"
+
+
 class Overview < JFrame
   
     def initialize
@@ -18,7 +21,7 @@ class Overview < JFrame
       self.initGUI
     end
       
-    def initGUI      
+    def initGUI
       menubar = JMenuBar.new
       #icon = ImageIcon.new "exit.
       
@@ -43,6 +46,9 @@ class Overview < JFrame
       
       #Points > Add
       itemAdd = JMenuItem.new "Add..."
+      itemAdd.addActionListener do |e|
+        WindowAdd.new
+      end
       itemAdd.setMnemonic KeyEvent::VK_A
       itemAdd.setToolTipText "Add one or multiple points"
       #Points > Remove
