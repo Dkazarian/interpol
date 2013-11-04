@@ -5,6 +5,7 @@ class Interpolator
   def initialize
     @points = []
     @verbose = false
+    @must_recalculate = true
   end
   
   def trace msj
@@ -14,12 +15,49 @@ class Interpolator
   def remove_point point    
     @points.delete point
     @point_removed = true
+    @must_recalculate = true unless grade_lower_to_points_count
   end
   
   def add_point point    
     @points = @points.delete_if {|p| p.x == point.x}      
-    @points<<point    
+    @points<<point        
+    @must_recalculate = true unless new_point_included point
   end
+
+  #Calcula los polinomios si es necesario
+  def interpolate 
+    
+    if @must_recalculate 
+      
+      trace("Construyendo polinomio progresivo.")
+      @progressive_polynomial = Polynomial.new polynomial_string(progressive_deltas, :progressive_product)
+      
+      
+      trace("Construyendo polinomio regresivo.")
+      @regressive_polynomial = Polynomial.new polynomial_string(regressive_deltas, :regressive_product)      
+      @must_recalculate = false
+
+      return true
+
+    end    
+  end
+
+  def deltas
+    @deltas || calculate_deltas
+  end
+  
+  #Evalua el punto en uno de los polinomios. Interpola si no estaba calculado.
+  def evaluate x    
+    interpolate unless polynomial
+    polynomial.evaluate x     
+  end
+
+
+  ####################################################################
+  #<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|#                    
+  ####################################################################
+
+
   
   #Calcula la tabla de deltas y la almacena en una lista de listas
   #Ejemplo:
@@ -43,13 +81,45 @@ class Interpolator
         deltas[i][o] = (deltas[i-1][o+1] - deltas[i-1][o]) / (@points[o+i].x - @points[o].x)   
       end
     end
-    deltas
+    @deltas = deltas
+  end
+
+
+  def progressive_deltas
+    deltas.map{|column| column.first}
   end
   
-  def deltas
-    @deltas
+  def regressive_deltas
+    deltas.map{|column| column.last}
+  end
+
+  def progressive_polynomial
+    @progressive_polynomial
   end
   
+  def regressive_polynomial
+    @regressive_polynomial
+  end
+
+
+  def polynomial
+    @progressive_polynomial
+  end
+
+  def new_point_included point
+    polynomial and polynomial.includes? point
+  end
+
+  def grade_lower_to_point_count
+    polynomial and deltas.length < points.length
+  end
+
+  
+
+  ####################################################################
+  #<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|#                    
+  ####################################################################
+
   #Arma los (x-a)(x-b)(x-c) para el termino k
   def progressive_product k
     str = ""
@@ -71,14 +141,7 @@ class Interpolator
     end
     str
   end
-  
-  def progressive_deltas
-    @deltas.map{|column| column.first}
-  end
-  
-  def regressive_deltas
-    @deltas.map{|column| column.last}
-  end
+
   
   #Arma el string del polinomio
   def polynomial_string deltas, product
@@ -92,48 +155,7 @@ class Interpolator
     (terms*" + ").gsub("- -","+ ").gsub("+ -","- ")    
   end
   
-  def progressive_polynomial
-    @progressive_polynomial
-  end
-  
-  def regressive_polynomial
-    @regressive_polynomial
-  end
-    
-  #Calcula los polinomios si es necesario
-  def interpolate 
-    
-    if must_recalculate 
-      @deltas = calculate_deltas 
-      
-      trace("Construyendo polinomio progresivo.")
-      @progressive_polynomial = Polynomial.new polynomial_string(progressive_deltas, :progressive_product)
-      
-      
-      trace("Construyendo polinomio regresivo.")
-      @regressive_polynomial = Polynomial.new polynomial_string(regressive_deltas, :regressive_product)      
-    end   
- 
-  end
-  
-  #Los polinomios deben calcularse si se quitaron puntos
-  #si no estan calculados o si se agregaron puntos fuera de los actuales
-  def must_recalculate    
 
-    if @point_removed or not @progressive_polynomial
-      @point_removed = false
-      return true
-    end    
-
-    points.detect {|point| not @progressive_polynomial.includes? point}    
-
-  end 
-  
-  #Evalua el punto en uno de los polinomios. Interpola si no estaba calculado.
-  def evaluate x    
-    interpolate unless @progressive_polynomial
-    @progressive_polynomial.evaluate x     
-  end
   
 end
 

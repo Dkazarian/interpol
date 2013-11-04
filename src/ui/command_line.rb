@@ -48,9 +48,11 @@ class CommandLine
 
 
 
-  #########################################
-  #               COMMANDOS               #
-  #########################################
+  ####################################################################
+  #<* ><|<* ><|<* ><|<* ><|<* ><|COMANDOS|><|<* ><|<* ><|<* ><|<* ><|#                  
+  ####################################################################
+
+
   def cmd_quit 
     @exit = true
   end
@@ -66,6 +68,7 @@ class CommandLine
     puts "evaluate x\tEvalua el polinomio en x"
     puts "points\tMuestra la lista actual de puntos"
     puts "clear\tLimpia la lista de puntos"    
+    puts "deltas\tMuestra la tabla de deltas"
     puts "help\tMuestra comandos disponibles"
     puts "quit\tSalir"
     puts "="*40
@@ -91,7 +94,7 @@ class CommandLine
   #Convierte los strings "x,y" de la lista a formato punto 
   #y ejecuta la funcion del planificador que se le paso en method.  
   #Si ya habia puntos intenta recalcular. Sino imprime la lista 
-  #resultante.
+  #resultante.  
   def forall_points list, method
     Point.parse_list(list).each {|p| @interpolator.send(method,p)}
     @recalculate? cmd_interpolate : cmd_points
@@ -132,6 +135,17 @@ class CommandLine
   def cmd_clear
     reset
     puts "Se eliminaron todos los puntos."
+  end
+ 
+  def cmd_deltas
+    deltas = @interpolator.deltas
+    length = deltas.length - 1
+    for ii in 0..length
+      for i in 0..length-ii
+        print "#{deltas[i][ii]}\t"
+      end
+      puts ""
+    end
   end
   
 end

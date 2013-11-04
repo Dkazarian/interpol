@@ -42,7 +42,7 @@ class Point
   def self.parse string
       point = string.split(",").map {|c| Float(c)} 
       raise PointFormatException.new if point.length!=2     
-      Point.new(point)
+      Point.new(point[0], point[1])
   rescue 
     raise PointFormatException.new  
   end
