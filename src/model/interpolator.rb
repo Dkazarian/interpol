@@ -55,7 +55,8 @@ class Interpolator
     str = ""
     for i in 0..k-1
       r = points[i].x
-      str+= (r==0)? "x" : "(x - #{r})" 
+      str+= (r==0)? "x" : "(x - #{r})"
+      str+= "*" if i != k-1
     end
     str
   end
@@ -66,6 +67,7 @@ class Interpolator
     for i in 0..k-1
       r = points[points.length-1-i].x
       str+= (r==0)? "x" : "(x - #{r})"
+      str+= "*" if i != k-1
     end
     str
   end
@@ -83,7 +85,7 @@ class Interpolator
     terms = []
     for i in 0..deltas.length-1
       if deltas[i] != 0
-        terms << "#{deltas[i]}#{send product, i}" 
+        terms << "#{deltas[i]}*#{send product, i}" 
       end
     end
     (terms*" + ").gsub("- -","+ ").gsub("+ -","- ")    
