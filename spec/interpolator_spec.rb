@@ -86,7 +86,40 @@ describe Interpolator do
     @interpolator.add_point p(0,4)
     @interpolator.interpolate
   end
-    
-  
+
+  it "should not explode when doing this thing that mades it explode too" do
+    [p(1,1), p(0,0), p(2,2)].each {|p| @interpolator.add_point p}
+    @interpolator.interpolate
+    [p(0,0), p(2,2), p(1,1)].each do |p| 
+      @interpolator.remove_point p
+      @interpolator.interpolate
+    end
+  end
+  context "when removing an extra point" do
+    it "should not recalculate the polynomial" do
+      [p(1,1), p(0,0), p(2,2)].each {|p| @interpolator.add_point p}
+      @interpolator.interpolate.should == true
+      @interpolator.remove_point p(2,2)
+      @interpolator.interpolate.should == false
+    end
+  end
+
+  context "when adding a point included in the polynomial" do
+    it "should not recalculate the polynomial" do
+      [p(1,1), p(0,0), p(2,2)].each {|p| @interpolator.add_point p}
+      @interpolator.interpolate.should == true
+      @interpolator.add_point p(4,4)
+      @interpolator.interpolate.should == false
+    end
+  end
+
+  context "when adding a point not included in the polynomial" do
+    it "should recalculate the polynomial" do
+      [p(1,1), p(0,0), p(2,2)].each {|p| @interpolator.add_point p}
+      @interpolator.interpolate.should == true
+      @interpolator.add_point p(10,4)
+      @interpolator.interpolate.should == true
+    end
+  end
   
 end

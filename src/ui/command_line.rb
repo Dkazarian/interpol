@@ -72,6 +72,7 @@ class CommandLine
     puts "help\tMuestra comandos disponibles"
     puts "quit\tSalir"
     puts "="*40
+    puts "Escriba 'demo' para ver un ejemplo"
     puts ""
     
   end
@@ -148,4 +149,42 @@ class CommandLine
     end
   end
   
+  def cmd_demo
+    commands = [
+      "add 1,1 3,3 4,13 5,37 7,151",
+      "interpolate",
+      "deltas",
+      "evaluate 6",
+      "evaluate 7",
+      "evaluate -4.2",
+      "add 0,0",
+      "rm 4,13",
+      "rm 7,151"
+      ]
+    commands.each do |cmd|
+      puts "> #{cmd}"
+      sleep 1
+      exec_command cmd
+      puts ""
+      sleep 2
+    end
+  end
+
+  def cmd_debug
+    puts "Debug mode"
+    @debug = true
+    while @debug 
+      begin
+        print "$ "
+        puts instance_eval(gets.chop)
+      rescue =>e
+        puts e
+      end
+    end
+  end
+
+  def quit
+    @debug = false
+    puts "Debug mode off"
+  end
 end

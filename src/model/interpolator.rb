@@ -5,7 +5,6 @@ class Interpolator
   def initialize
     @points = []
     @verbose = false
-    @must_recalculate = true
   end
   
   def trace msj
@@ -13,21 +12,27 @@ class Interpolator
   end
     
   def remove_point point    
-    @points.delete point
-    @point_removed = true
-    @must_recalculate = true unless grade_lower_to_points_count
+    @points.delete(point) 
   end
   
   def add_point point    
     @points = @points.delete_if {|p| p.x == point.x}      
     @points<<point        
-    @must_recalculate = true unless new_point_included point
+  end
+
+  def must_recalculate
+    if polynomial
+      unless @points.detect {|p| not polynomial.includes? p}
+        return !grade_lower_to_points_count
+      end
+    end
+    true
   end
 
   #Calcula los polinomios si es necesario
   def interpolate 
     
-    if @must_recalculate 
+    if must_recalculate 
       
       trace("Construyendo polinomio progresivo.")
       @progressive_polynomial = Polynomial.new polynomial_string(progressive_deltas, :progressive_product)
@@ -35,11 +40,12 @@ class Interpolator
       
       trace("Construyendo polinomio regresivo.")
       @regressive_polynomial = Polynomial.new polynomial_string(regressive_deltas, :regressive_product)      
-      @must_recalculate = false
 
       return true
 
-    end    
+    end 
+
+    false   
   end
 
   def deltas
@@ -111,8 +117,8 @@ class Interpolator
     polynomial and polynomial.includes? point
   end
 
-  def grade_lower_to_point_count
-    polynomial and deltas.length < points.length
+  def grade_lower_to_points_count
+    polynomial and deltas.length-1 < points.length 
   end
 
   
