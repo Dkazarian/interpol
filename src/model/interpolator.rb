@@ -82,6 +82,7 @@ class Interpolator
       end
     end
     @deltas = deltas
+    deltas
   end
 
 
