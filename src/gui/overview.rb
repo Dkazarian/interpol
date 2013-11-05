@@ -54,12 +54,15 @@ class Overview < JFrame
       itemAdd.setToolTipText "Add one or multiple points"
       #Points > Remove
       itemRemove = JMenuItem.new "Remove..."
+      itemRemove.addActionListener do |e|
+        WindowPoints.new "Remove points", true
+      end
       itemRemove.setMnemonic KeyEvent::VK_R
       itemRemove.setToolTipText "Remove one or multiple points"
       #Points > View
       itemView = JMenuItem.new "View list"
       itemView.addActionListener do |e|
-        WindowPoints.new
+        WindowPoints.new "View points", false
       end
       itemView.setMnemonic KeyEvent::VK_V
       itemView.setToolTipText "View point list"
