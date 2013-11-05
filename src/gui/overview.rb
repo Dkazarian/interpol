@@ -11,6 +11,7 @@ import java.lang.System
 
 
 require_relative "window_add.rb"
+require_relative "window_points.rb"
 
 
 class Overview < JFrame
@@ -57,6 +58,9 @@ class Overview < JFrame
       itemRemove.setToolTipText "Remove one or multiple points"
       #Points > View
       itemView = JMenuItem.new "View list"
+      itemView.addActionListener do |e|
+        WindowPoints.new
+      end
       itemView.setMnemonic KeyEvent::VK_V
       itemView.setToolTipText "View point list"
       

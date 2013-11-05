@@ -2,7 +2,9 @@ include Java
 
 import java.awt.event.KeyEvent
 import javax.swing.JButton
-import javax.swing.JTextField
+import javax.swing.JList
+import javax.swing.ListSelectionModel
+import javax.swing.JScrollPane
 import javax.swing.JLabel
 import javax.swing.JFrame
 import javax.swing.JPanel
@@ -10,46 +12,41 @@ import java.awt.Dimension
 import java.lang.System
 
 
-class WindowAdd < JFrame
+class WindowPoints < JFrame
   
     def initialize
-      super "Add points"
+      super "View points"
       self.initGUI
     end
-      
+    
     def initGUI
       self.setLayout nil
       
       separation = 20
       field_width = 100
       field_height = 25
-      window_width = 2 * field_width + 3 * separation
-      window_height = 3 * separation + 3 * field_height
+      list_width = 150
+      list_height = 300
+      window_width = list_width + 2 * separation
+      window_height = 3 * separation + 2 * field_height + list_height
       
       descriptionLabel = JLabel.new "description here"
       descriptionLabel.setBounds separation, separation, window_width - 2 * separation, field_height
       
-      xField = JTextField.new
-      yField = JTextField.new
-      xField.setBounds separation, descriptionLabel.getBounds.y + descriptionLabel.getBounds.height + separation, field_width, field_height
-      yField.setBounds xField.getBounds.x + xField.getBounds.width + separation, xField.getBounds.y, field_width, field_height
-      
-      addButton = JButton.new "Add"
-      addButton.addActionListener do |e|
-          System.exit 0 #TODO agregar punto
-      end
-      addButton.setBounds window_width - field_width, window_height - field_height, field_width, field_height
+      list = JList.new #TODO pasarle la lista de puntos
+      list.setSelectionMode ListSelectionModel.SINGLE_INTERVAL_SELECTION
+      list.setVisibleRowCount -1
+      listScroller = JScrollPane.new list
+      list.setBounds separation, 2 * separation + field_height, list_width, list_height
 
       closeButton = JButton.new "Close"
       closeButton.addActionListener do |e|
         self.dispose
       end
-      closeButton.setBounds window_width - 2 * field_width, window_height - field_height, field_width, field_height
+      closeButton.setBounds window_width - field_width, window_height - field_height, field_width, field_height
       
       self.add descriptionLabel
-      self.add xField
-      self.add yField
-      self.add addButton
+      self.add list
       self.add closeButton
       
       window_size = Dimension.new window_width, window_height
