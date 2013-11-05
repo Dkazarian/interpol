@@ -10,14 +10,18 @@ import java.awt.Dimension
 import java.lang.System
 
 
+require_relative "../model/interpolator.rb"
+require_relative "../model/point.rb"
+
+
 class WindowAdd < JFrame
   
-    def initialize
+    def initialize interpolator
       super "Add points"
-      self.initGUI
+      self.initGUI interpolator
     end
       
-    def initGUI
+    def initGUI interpolator
       self.setLayout nil
       
       separation = 20
@@ -36,7 +40,13 @@ class WindowAdd < JFrame
       
       addButton = JButton.new "Add"
       addButton.addActionListener do |e|
-          System.exit 0 #TODO agregar punto
+        vector = []
+        vector << Float(xField.getText)
+        vector << Float(yField.getText)
+        point = Point.new(vector)
+        interpolator.add_point point
+        xField.setText ""
+        yField.setText ""
       end
       addButton.setBounds window_width - field_width, window_height - field_height, field_width, field_height
 

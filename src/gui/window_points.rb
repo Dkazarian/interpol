@@ -12,14 +12,18 @@ import java.awt.Dimension
 import java.lang.System
 
 
+require_relative "../model/interpolator.rb"
+require_relative "../model/point.rb"
+
+
 class WindowPoints < JFrame
   
-    def initialize title, remove_button
+    def initialize interpolator, title, remove_button
       super title
-      self.initGUI remove_button
+      self.initGUI interpolator, remove_button
     end
     
-    def initGUI remove_button
+    def initGUI interpolator, remove_button
       self.setLayout nil
       
       separation = 20
