@@ -87,7 +87,7 @@ describe Interpolator do
     @interpolator.interpolate
   end
 
-  it "should not explode when doing this thing that mades it explode too" do
+  it "should not explode when interpolating after removing points" do
     [p(1,1), p(0,0), p(2,2)].each {|p| @interpolator.add_point p}
     @interpolator.interpolate
     [p(0,0), p(2,2), p(1,1)].each do |p| 
@@ -95,11 +95,14 @@ describe Interpolator do
       @interpolator.interpolate
     end
   end
+
   context "when removing an extra point" do
     it "should not recalculate the polynomial" do
       [p(1,1), p(0,0), p(2,2)].each {|p| @interpolator.add_point p}
-      @interpolator.interpolate.should == true
+      @interpolator.interpolate.should == true      
+      @interpolator.grade_lower_to_points_count.should == true
       @interpolator.remove_point p(2,2)
+      @interpolator.grade_lower_to_points_count.should == false
       @interpolator.interpolate.should == false
     end
   end

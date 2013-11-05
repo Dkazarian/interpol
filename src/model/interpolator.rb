@@ -49,7 +49,8 @@ class Interpolator
   end
 
   def deltas
-    @deltas || calculate_deltas
+    calculate_deltas unless @deltas
+    @deltas
   end
   
   #Evalua el punto en uno de los polinomios. Interpola si no estaba calculado.
