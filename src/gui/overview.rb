@@ -158,6 +158,16 @@ class Canvas < JPanel
     g.drawLine 0, -hw, 0, hw
     g.drawLine -hh, 0, hh, 0
     
+    #dibujamos la funcion
+    for x in -hw..hw
+      y = @model.evaluate x
+      last_x = x if x == -hw
+      last_y = y if x == -hw
+      g.drawLine last_x, last_y, x, y
+      last_x = x
+      last_y = y
+    end
+    
     #antitransformamos
     g.setTransform at
   end
