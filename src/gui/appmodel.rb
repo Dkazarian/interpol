@@ -23,12 +23,16 @@ class Model
     @interpolator = Interpolator.new
   end
   
-  def calculate x
-    interpolator.calculate x
+  def evaluate x
+    interpolator.evaluate x
   end
   
   def interpolate
     interpolator.interpolate
+  end
+  
+  def drawable
+    interpolator.polynomial
   end
   
   def interpolator

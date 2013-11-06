@@ -27,6 +27,8 @@ class Overview < JFrame
     end
       
     def initGUI model
+      canvas = Canvas.new
+      
       menubar = JMenuBar.new
       #icon = ImageIcon.new "exit.
       
@@ -42,6 +44,14 @@ class Overview < JFrame
       end
       itemInterpolate.setMnemonic KeyEvent::VK_I
       itemInterpolate.setToolTipText "Interpolate current points"
+
+      #Program > Refresh
+      itemRefresh = JMenuItem.new "Refresh"
+      itemRefresh.addActionListener do |e|
+          canvas.redraw model, 0, 0, 100, 100
+      end
+      itemRefresh.setMnemonic KeyEvent::VK_R
+      itemRefresh.setToolTipText "Refresh draw"
       
       #Program > Exit
       itemExit = JMenuItem.new "Exit"#, icon
@@ -52,6 +62,9 @@ class Overview < JFrame
       itemExit.setToolTipText "Exit application"
 
       programMenu.add itemInterpolate
+      programMenu.addSeparator
+      programMenu.add itemRefresh
+      programMenu.addSeparator
       programMenu.add itemExit
       menubar.add programMenu
       
@@ -90,7 +103,6 @@ class Overview < JFrame
       #################################################### Window
       self.setJMenuBar menubar
       
-      canvas = Canvas.new
       self.getContentPane.add canvas
       
       self.setDefaultCloseOperation JFrame::EXIT_ON_CLOSE
@@ -104,9 +116,21 @@ end
 
 class Canvas < JPanel
   
+  def redraw model, x, y, width, height
+    @model = model
+    @x = x
+    @y = y
+    @width = width
+    @height = height
+    self.repaint
+  end
+  
   def paintComponent g
     super g
-    
+    self.draw g
+  end
+  
+  def draw g
     g.setColor(Color.new(125, 167, 116))
     g.fillRect 10, 15, 90, 60
 
