@@ -21,13 +21,12 @@ require_relative "../model/interpolator.rb"
 
 class Overview < JFrame
   
-    def initialize
+    def initialize model
       super "Overview form"
-      interpolator = Interpolator.new
-      self.initGUI interpolator
+      self.initGUI model
     end
       
-    def initGUI interpolator
+    def initGUI model
       menubar = JMenuBar.new
       #icon = ImageIcon.new "exit.
       
@@ -38,7 +37,7 @@ class Overview < JFrame
       #Program > Interpolate
       itemInterpolate = JMenuItem.new "Interpolate"
       itemInterpolate.addActionListener do |e|
-        interpolator.interpolate
+        model.interpolate
         #TODO mostrar el resultado en un dialog
       end
       itemInterpolate.setMnemonic KeyEvent::VK_I
@@ -63,21 +62,21 @@ class Overview < JFrame
       #Points > Add
       itemAdd = JMenuItem.new "Add..."
       itemAdd.addActionListener do |e|
-        WindowAdd.new interpolator
+        WindowAdd.new model
       end
       itemAdd.setMnemonic KeyEvent::VK_A
       itemAdd.setToolTipText "Add one or multiple points"
       #Points > Remove
       itemRemove = JMenuItem.new "Remove..."
       itemRemove.addActionListener do |e|
-        WindowPoints.new interpolator, "Remove points", true
+        WindowPoints.new model, "Remove points", true
       end
       itemRemove.setMnemonic KeyEvent::VK_R
       itemRemove.setToolTipText "Remove one or multiple points"
       #Points > View
       itemView = JMenuItem.new "View list"
       itemView.addActionListener do |e|
-        WindowPoints.new interpolator, "View points", false
+        WindowPoints.new model, "View points", false
       end
       itemView.setMnemonic KeyEvent::VK_V
       itemView.setToolTipText "View point list"

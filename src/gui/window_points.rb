@@ -18,12 +18,12 @@ require_relative "../model/point.rb"
 
 class WindowPoints < JFrame
   
-    def initialize interpolator, title, remove_button
+    def initialize model, title, remove_button
       super title
-      self.initGUI interpolator, remove_button
+      self.initGUI model, remove_button
     end
     
-    def initGUI interpolator, remove_button
+    def initGUI model, remove_button
       self.setLayout nil
       
       separation = 20

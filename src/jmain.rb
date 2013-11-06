@@ -10,6 +10,8 @@ require_relative "model/interpolator"
 require_relative "model/point"
 require_relative "model/polynomial"
 
+require_relative "gui/appmodel.rb"
+
 require_relative "gui/overview.rb"
 
-Overview.new
+Overview.new(Model.new)

@@ -16,12 +16,12 @@ require_relative "../model/point.rb"
 
 class WindowAdd < JFrame
   
-    def initialize interpolator
+    def initialize model
       super "Add points"
-      self.initGUI interpolator
+      self.initGUI model
     end
       
-    def initGUI interpolator
+    def initGUI model
       self.setLayout nil
       
       separation = 20
@@ -40,11 +40,9 @@ class WindowAdd < JFrame
       
       addButton = JButton.new "Add"
       addButton.addActionListener do |e|
-        vector = []
-        vector << Float(xField.getText)
-        vector << Float(yField.getText)
-        point = Point.new(vector)
-        interpolator.add_point point
+        x = xField.getText
+        y = yField.getText
+        model.add x, y
         xField.setText ""
         yField.setText ""
       end
