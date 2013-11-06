@@ -16,7 +16,11 @@ class Model
   end
   
   def points
-    interpolator.points
+    interpolator.points.sort
+  end
+  
+  def clear
+    @interpolator = Interpolator.new
   end
   
   def calculate x

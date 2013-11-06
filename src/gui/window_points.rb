@@ -30,7 +30,7 @@ class WindowPoints < JFrame
       field_width = 100
       field_height = 25
       list_width = 150
-      list_height = 300
+      list_height = 200
       remove_height = 0
       remove_height = 25 if remove_button
       window_width = list_width + 2 * separation
@@ -39,23 +39,29 @@ class WindowPoints < JFrame
       descriptionLabel = JLabel.new "description here"
       descriptionLabel.setBounds separation, separation, window_width - 2 * separation, field_height
       
-      list = JList.new #TODO pasarle la lista de puntos
+      list = JList.new
       list.setSelectionMode ListSelectionModel.SINGLE_INTERVAL_SELECTION
       list.setVisibleRowCount -1
-      listScroller = JScrollPane.new list
+      listScroller = JScrollPane.new list #TODO la scrollbar no se esta mostrando
       list.setBounds separation, 2 * separation + field_height, list_width, list_height
+      
+      refresh_list list, model
 
       if remove_button
         removeButton = JButton.new "Remove"
         removeButton.addActionListener do |e|
-          System.exit 0 #TODO eliminar punto seleccionado
+          return if nothing_selected list
+          point = list.getSelectedValue
+          model.rm point
+          refresh_list list, model
         end
         removeButton.setBounds separation, 2 * separation + field_height + list_height, list_width, remove_height
         self.add removeButton
         
         clearButton = JButton.new "Remove all"
         clearButton.addActionListener do |e|
-          System.exit 0 #TODO eliminar todos los puntos
+          model.clear
+          refresh_list list, model
         end
         clearButton.setBounds separation, 2 * separation + field_height + list_height + remove_height, list_width, remove_height
         self.add clearButton
@@ -79,5 +85,13 @@ class WindowPoints < JFrame
       self.setDefaultCloseOperation JFrame::EXIT_ON_CLOSE
       self.setLocationRelativeTo nil
       self.setVisible true
+    end
+    
+    def nothing_selected jlist
+      jlist.getSelectedIndex == -1
+    end
+    
+    def refresh_list jlist, model
+      jlist.setListData model.points.to_java
     end
 end
