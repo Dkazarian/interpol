@@ -7,7 +7,7 @@ class Model
   end
   
   def add x, y
-    point = [Float(x), Float(y)]
+    point = Point.new Float(x), Float(y)
     interpolator.add_point point
   end
   

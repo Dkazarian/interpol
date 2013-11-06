@@ -34,7 +34,7 @@ class WindowPoints < JFrame
       remove_height = 0
       remove_height = 25 if remove_button
       window_width = list_width + 2 * separation
-      window_height = 3 * separation + 2 * field_height + list_height + remove_height
+      window_height = 3 * separation + 2 * field_height + list_height + 2 * remove_height
       
       descriptionLabel = JLabel.new "description here"
       descriptionLabel.setBounds separation, separation, window_width - 2 * separation, field_height
@@ -51,6 +51,14 @@ class WindowPoints < JFrame
           System.exit 0 #TODO eliminar punto seleccionado
         end
         removeButton.setBounds separation, 2 * separation + field_height + list_height, list_width, remove_height
+        self.add removeButton
+        
+        clearButton = JButton.new "Remove all"
+        clearButton.addActionListener do |e|
+          System.exit 0 #TODO eliminar todos los puntos
+        end
+        clearButton.setBounds separation, 2 * separation + field_height + list_height + remove_height, list_width, remove_height
+        self.add clearButton
       end
 
       closeButton = JButton.new "Close"
@@ -61,7 +69,6 @@ class WindowPoints < JFrame
       
       self.add descriptionLabel
       self.add list
-      self.add removeButton if remove_button
       self.add closeButton
       
       window_size = Dimension.new window_width, window_height
