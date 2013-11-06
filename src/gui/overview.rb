@@ -11,6 +11,7 @@ import java.lang.System
 
 import java.awt.Graphics
 import java.awt.Color
+import java.awt.Dimension
 
 
 require_relative "window_add.rb"
@@ -49,7 +50,7 @@ class Overview < JFrame
       #Program > Refresh
       itemRefresh = JMenuItem.new "Refresh"
       itemRefresh.addActionListener do |e|
-          canvas.redraw 0, 0, 100, 100
+          canvas.redraw -50, -50, 100, 100
       end
       itemRefresh.setMnemonic KeyEvent::VK_R
       itemRefresh.setToolTipText "Refresh draw"
@@ -131,40 +132,33 @@ class Canvas < JPanel
   
   def paintComponent g
     super g
-    self.draw g unless not @model.drawable
+    self.draw_function g unless not @model.drawable
   end
   
   def drawPoint g, x, y
     g.drawLine x, y, x, y
   end
   
-  def draw g
+  def draw_function g
+    panel_width = self.getHeight
+    panel_height = self.getWidth
+    hw = panel_width / 2
+    hh = panel_height / 2
+    
+    #nos guardamos la antitransformacion
+    at = g.getTransform
+    #transformamos a coordenadas cartesianas
+    g.translate hw, hh
+    g.scale 1, -1
     
 #    g.setColor(Color.new(125, 167, 116))
 #    g.fillRect 10, 15, 90, 60
-#
-#    g.setColor(Color.new(42, 179, 231))
-#    g.fillRect 130, 15, 90, 60
-#
-#    g.setColor(Color.new(70, 67, 123))
-#    g.fillRect 250, 15, 90, 60
-#
-#    g.setColor(Color.new(130, 100, 84))
-#    g.fillRect 10, 105, 90, 60
-#
-#    g.setColor(Color.new(252, 211, 61))
-#    g.fillRect 130, 105, 90, 60
-#
-#    g.setColor(Color.new(241, 98, 69))
-#    g.fillRect 250, 105, 90, 60
-#
-#    g.setColor(Color.new(217, 146, 54))
-#    g.fillRect 10, 195, 90, 60
-#
-#    g.setColor(Color.new(63, 121, 186))
-#    g.fillRect 130, 195, 90, 60
-#
-#    g.setColor(Color.new(31, 21, 1))
-#    g.fillRect 250, 195, 90, 60
+    
+    #dibujamos los ejes
+    g.drawLine 0, -hw, 0, hw
+    g.drawLine -hh, 0, hh, 0
+    
+    #antitransformamos
+    g.setTransform at
   end
 end
