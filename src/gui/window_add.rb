@@ -45,6 +45,7 @@ class WindowAdd < JFrame
         model.add x, y
         xField.setText ""
         yField.setText ""
+        xField.requestFocus
       end
       addButton.setBounds window_width - field_width, window_height - field_height, field_width, field_height
 
@@ -59,6 +60,7 @@ class WindowAdd < JFrame
       self.add yField
       self.add addButton
       self.add closeButton
+      self.getRootPane.setDefaultButton addButton
       
       window_size = Dimension.new window_width, window_height
       self.getContentPane.setPreferredSize window_size
