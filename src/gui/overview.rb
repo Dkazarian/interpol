@@ -90,15 +90,48 @@ class Overview < JFrame
       #################################################### Window
       self.setJMenuBar menubar
       
+      canvas = Canvas.new
+      self.getContentPane.add canvas
+      
       self.setDefaultCloseOperation JFrame::EXIT_ON_CLOSE
-      self.setSize 250, 200
+      self.setSize 500, 500
       self.setLocationRelativeTo nil
       self.setVisible true
     end
     
-    def paintComponent g
-      super g
-      g.setPaint Red
-      g.drawLine 0, 0, 400, 400 #this is not working s:
-    end
+end
+
+
+class Canvas < JPanel
+  
+  def paintComponent g
+    super g
+    
+    g.setColor(Color.new(125, 167, 116))
+    g.fillRect 10, 15, 90, 60
+
+    g.setColor(Color.new(42, 179, 231))
+    g.fillRect 130, 15, 90, 60
+
+    g.setColor(Color.new(70, 67, 123))
+    g.fillRect 250, 15, 90, 60
+
+    g.setColor(Color.new(130, 100, 84))
+    g.fillRect 10, 105, 90, 60
+
+    g.setColor(Color.new(252, 211, 61))
+    g.fillRect 130, 105, 90, 60
+
+    g.setColor(Color.new(241, 98, 69))
+    g.fillRect 250, 105, 90, 60
+
+    g.setColor(Color.new(217, 146, 54))
+    g.fillRect 10, 195, 90, 60
+
+    g.setColor(Color.new(63, 121, 186))
+    g.fillRect 130, 195, 90, 60
+
+    g.setColor(Color.new(31, 21, 1))
+    g.fillRect 250, 195, 90, 60
+  end
 end
