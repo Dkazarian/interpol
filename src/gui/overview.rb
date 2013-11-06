@@ -25,9 +25,10 @@ class Overview < JFrame
       super "Overview form"
       self.initGUI model
     end
-      
+    
     def initGUI model
       canvas = Canvas.new
+      canvas.setModel model
       
       menubar = JMenuBar.new
       #icon = ImageIcon.new "exit.
@@ -48,7 +49,7 @@ class Overview < JFrame
       #Program > Refresh
       itemRefresh = JMenuItem.new "Refresh"
       itemRefresh.addActionListener do |e|
-          canvas.redraw model, 0, 0, 100, 100
+          canvas.redraw 0, 0, 100, 100
       end
       itemRefresh.setMnemonic KeyEvent::VK_R
       itemRefresh.setToolTipText "Refresh draw"
@@ -116,8 +117,11 @@ end
 
 class Canvas < JPanel
   
-  def redraw model, x, y, width, height
+  def setModel model
     @model = model
+  end
+  
+  def redraw x, y, width, height
     @x = x
     @y = y
     @width = width
@@ -127,35 +131,40 @@ class Canvas < JPanel
   
   def paintComponent g
     super g
-    self.draw g
+    self.draw g unless not @model.drawable
+  end
+  
+  def drawPoint g, x, y
+    g.drawLine x, y, x, y
   end
   
   def draw g
-    g.setColor(Color.new(125, 167, 116))
-    g.fillRect 10, 15, 90, 60
-
-    g.setColor(Color.new(42, 179, 231))
-    g.fillRect 130, 15, 90, 60
-
-    g.setColor(Color.new(70, 67, 123))
-    g.fillRect 250, 15, 90, 60
-
-    g.setColor(Color.new(130, 100, 84))
-    g.fillRect 10, 105, 90, 60
-
-    g.setColor(Color.new(252, 211, 61))
-    g.fillRect 130, 105, 90, 60
-
-    g.setColor(Color.new(241, 98, 69))
-    g.fillRect 250, 105, 90, 60
-
-    g.setColor(Color.new(217, 146, 54))
-    g.fillRect 10, 195, 90, 60
-
-    g.setColor(Color.new(63, 121, 186))
-    g.fillRect 130, 195, 90, 60
-
-    g.setColor(Color.new(31, 21, 1))
-    g.fillRect 250, 195, 90, 60
+    
+#    g.setColor(Color.new(125, 167, 116))
+#    g.fillRect 10, 15, 90, 60
+#
+#    g.setColor(Color.new(42, 179, 231))
+#    g.fillRect 130, 15, 90, 60
+#
+#    g.setColor(Color.new(70, 67, 123))
+#    g.fillRect 250, 15, 90, 60
+#
+#    g.setColor(Color.new(130, 100, 84))
+#    g.fillRect 10, 105, 90, 60
+#
+#    g.setColor(Color.new(252, 211, 61))
+#    g.fillRect 130, 105, 90, 60
+#
+#    g.setColor(Color.new(241, 98, 69))
+#    g.fillRect 250, 105, 90, 60
+#
+#    g.setColor(Color.new(217, 146, 54))
+#    g.fillRect 10, 195, 90, 60
+#
+#    g.setColor(Color.new(63, 121, 186))
+#    g.fillRect 130, 195, 90, 60
+#
+#    g.setColor(Color.new(31, 21, 1))
+#    g.fillRect 250, 195, 90, 60
   end
 end
