@@ -1,69 +1,63 @@
 class CommandLine
   
+  #Constructor
   def initialize 
      reset
+     cmd_trace
   end
 
+  #Limpia todo, al usar un Interpolator nuevo se borran
+  #los polinomios y los puntos  (si habian)
   def reset
     @interpolator = Interpolator.new
-    trace
     @recalculate = false
-  end
-  
-  
-  def exec_command input
-    
-    command, *params = input.split(/\s/)
-    exit = false
-    #begin
-      
-    case command
-      when /add/
-        add params
-      when /rm/, /remove/
-        rm params
-      when /interpolate/
-        interpolate 
-      when /calculate/
-        calculate params
-      when /points/
-        points 
-      when /clr/, /clear/
-        clear 
-      when /quit/, /exit/
-        exit = true
-      when /trace/
-        trace
-      when /help/
-        help
-      else
-        puts "No existe el comando. Para ver los comandos, use help"
-    end   
-  
-    abort("Adios!") if exit
-  end
-    
+  end 
+
+
+  #Muestra la lista de comandos y despues lee y ejecuta comandos hasta que el 
+  #usuario ponga quit 
   def start
-      
-    help
+
+    cmd_help
     
-    loop do 
+    until @exit
       print "\n> "
-      begin
-        exec_command gets.chop 
-      rescue ArgumentError,TypeError=>e
-        puts "Formato invalido: "+ e.to_s
-      end
+      exec_command gets.chop 
     end
       
   end   
 
 
-  #########################################
-  #               COMMANDS                #
-  #########################################
-  
-  def help
+  #Ejecuta la funcion cmd_"nombre_del_comando_ingresado" si existe
+  # En command queda la primer palabra ingresada
+  # y en params un vector con el resto de las cosas
+  # Ejemplo:
+  #     El usuario ingresa add x1,y1 x2,y2 x3,y3
+  #     Queda:
+  #     command: "add"
+  #     params: ["x1,y1", "x2,y2", "x3,y3"]
+  def exec_command input
+
+    command, *params = input.split(/\s/) 
+    (params.empty?)? send("cmd_#{command}") : send("cmd_#{command}", params)
+  rescue NoMethodError => e
+    raise unless e.message.include?("cmd_#{command}") 
+    puts "No existe el comando #{command}. Para ver los comandos, use help"
+  end   
+
+
+
+
+  ####################################################################
+  #<* ><|<* ><|<* ><|<* ><|<* ><|COMANDOS|><|<* ><|<* ><|<* ><|<* ><|#                  
+  ####################################################################
+
+
+  def cmd_quit 
+    @exit = true
+  end
+
+  def cmd_help  
     
     puts "="*40
     puts "Comandos disponibles"
@@ -71,43 +65,47 @@ class CommandLine
     puts "add x1,y1 x2,y2 xn,yn\tAgrega punto/s" 
     puts "rm x1,y1 x2,y2 xn,yn\tRemueve punto/s"
     puts "interpolate\tMuestra o calcula el polinomio interpolador"
-    puts "calculate x\tEvalua el polinomio en x"
+    puts "evaluate x\tEvalua el polinomio en x"
     puts "points\tMuestra la lista actual de puntos"
     puts "clear\tLimpia la lista de puntos"    
+    puts "deltas\tMuestra la tabla de deltas"
     puts "help\tMuestra comandos disponibles"
     puts "quit\tSalir"
     puts "="*40
+    puts "Escriba 'demo' para ver un ejemplo"
     puts ""
     
   end
-    
-  def trace
-    @interpolator.verbose =  @interpolator.verbose^true
-  end
-  def parse_point string
-      point = string.split(",").map {|c| Float(c)} 
-      raise ArgumentError.new("El formato de los datos debe ser x,y") if point.length!=2     
-      Point.new(point)
-  end
   
-  def add params
-    new_points = []
-    params.each { |param| new_points << parse_point(param)}
-    new_points.each {|p| @interpolator.add_point p}
-    points
-    interpolate if @recalculate
+  #Activa o desactiva los mensajes del interpolador
+  def cmd_trace  
+    @interpolator.verbose =  @interpolator.verbose^true
+  end  
+  
+  #Agrega todos los puntos en params a la lista del interpolador
+  def cmd_add params
+    forall_points params, :add_point
+  end 
+  
+  #Remueve todos los puntos de params  
+  def cmd_rm params
+    forall_points params, :remove_point
+  end 
+  
+  #Convierte los strings "x,y" de la lista a formato punto 
+  #y ejecuta la funcion del planificador que se le paso en method.  
+  #Si ya habia puntos intenta recalcular. Sino imprime la lista 
+  #resultante.  
+  def forall_points list, method
+    Point.parse_list(list).each {|p| @interpolator.send(method,p)}
+    @recalculate? cmd_interpolate : cmd_points
+  rescue PointFormatException => e
+    puts e.message
   end
 
-  
-  def rm params
-    rm_points = []
-    params.each { |param| rm_points << parse_point(param)}
-    rm_points.each{|p| @interpolator.remove_point p}
-    points
-    interpolate if @recalculate
-  end
-    
-  def interpolate 
+  #Le dice al interpolador que interpole y si se recalcularon los polinomios
+  #los muestra
+  def cmd_interpolate  
      puts ""
      if @interpolator.interpolate
        puts "*"*20
@@ -122,20 +120,71 @@ class CommandLine
      @recalculate = true
   end
   
+  #Le pide al interpolador que evalue un punto en el polinomio
+  def cmd_evaluate params
+    puts @interpolator.evaluate(Float(params[0])) 
+  rescue PointFormatException => e
+    puts e.message
+  end 
   
-  def calculate params
-    puts @interpolator.calculate(Float(params[0])) 
-  end
-  
-  
-  def points
+  #Imprime la lista de puntos
+  def cmd_points 
     puts @interpolator.points.length > 0? "#{@interpolator.points*"\n"}" : "No se ingresaron puntos."
   end
   
-  def clear
+  #Resetea
+  def cmd_clear
     reset
     puts "Se eliminaron todos los puntos."
   end
+ 
+  def cmd_deltas
+    deltas = @interpolator.deltas
+    length = deltas.length - 1
+    for ii in 0..length
+      for i in 0..length-ii
+        print "#{deltas[i][ii]}\t"
+      end
+      puts ""
+    end
+  end
   
-end
+  def cmd_demo
+    commands = [
+      "add 1,1 3,3 4,13 5,37 7,151",
+      "interpolate",
+      "deltas",
+      "evaluate 6",
+      "evaluate 7",
+      "evaluate -4.2",
+      "add 0,0",
+      "rm 4,13",
+      "rm 7,151"
+      ]
+    commands.each do |cmd|
+      puts "> #{cmd}"
+      sleep 1
+      exec_command cmd
+      puts ""
+      sleep 2
+    end
+  end
 
+  def cmd_debug
+    puts "Debug mode"
+    @debug = true
+    while @debug 
+      begin
+        print "$ "
+        puts instance_eval(gets.chop)
+      rescue =>e
+        puts e
+      end
+    end
+  end
+
+  def quit
+    @debug = false
+    puts "Debug mode off"
+  end
+end
