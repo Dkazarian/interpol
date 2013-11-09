@@ -22,8 +22,8 @@ class Interpolator
 
   def must_recalculate
     if polynomial
-      unless @points.detect {|p| not polynomial.includes? p}
-        return !grade_lower_to_points_count
+      unless @points.all? {|p| polynomial.includes? p}
+        return !grade_lower_to_points_count #si el grado es mayor q la cantidad de los puntos existe un poliniomio interpolante de menor grado
       end
     end
     true
@@ -34,7 +34,7 @@ class Interpolator
     
     if must_recalculate 
       calculate_deltas
-      
+
       trace("Construyendo polinomio progresivo.")
       @progressive_polynomial = Polynomial.new polynomial_string(progressive_deltas, :progressive_product)
       
@@ -120,7 +120,7 @@ class Interpolator
   end
 
   def grade_lower_to_points_count
-    polynomial and deltas.length-1 < points.length 
+    polynomial and deltas.length-1 < points.length
   end
 
   
