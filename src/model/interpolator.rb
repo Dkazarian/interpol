@@ -33,6 +33,7 @@ class Interpolator
   def interpolate 
     
     if must_recalculate 
+      calculate_deltas
       
       trace("Construyendo polinomio progresivo.")
       @progressive_polynomial = Polynomial.new polynomial_string(progressive_deltas, :progressive_product)
