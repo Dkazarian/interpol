@@ -130,7 +130,7 @@ class CommandLine
       puts ""
       sleep 2
     end
-    puts "\n\t\t**Fin de la demostracion**\n\n".yellow
+    puts "\n\t\t#{"**".yellow}Fin de la demostracion#{"**".yellow}\n\n"
   end
 
   
