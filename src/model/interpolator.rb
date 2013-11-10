@@ -22,7 +22,7 @@ class Interpolator
   end
 
   def refresh
-    if polynomial and (!grade_lower_to_points_count or @points.any?{|point| not polynomial.includes? point})
+    if polynomial and (!minimal_grade or @points.any?{|point| not polynomial.includes? point})
       interpolate!
       true
     else 
@@ -111,11 +111,19 @@ class Interpolator
     @progressive_polynomial
   end
 
-  def grade_lower_to_points_count
-    polynomial and deltas.length-1 < points.length
+  def minimal_grade
+    grade < points.length
   end
 
-  
+  def grade
+    grade = deltas.length-1
+    while (deltas[grade].all? { |e| e==0 } and grade > 0) 
+      grade-=1
+    end
+    grade    
+  end
+
+
 
   ####################################################################
   #<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|<* ><|#                    

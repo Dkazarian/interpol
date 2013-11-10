@@ -124,7 +124,7 @@ describe Interpolator do
     end
   end
 
-  describe :grade_lower_to_points_count do
+  describe :minimal_grade do
       before :each do
       @points = [
                   p(1,1), 
@@ -135,27 +135,26 @@ describe Interpolator do
     end
     
     it "should return true after interpolating" do
-      @interpolator.add_point p(3,3)
-      @interpolator.grade_lower_to_points_count.should == true
+      @interpolator.minimal_grade.should == true
     end
 
     it "should return true after removing an extra point" do
       @interpolator.add_point p(3,3)
       @interpolator.interpolate!
       @interpolator.remove_point p(2,2)
-      @interpolator.grade_lower_to_points_count.should == true
+      @interpolator.minimal_grade.should == true
     end
 
     #Deberia dar false porque existe polinomio de grado menor (y = 1)
     it "should return false after removing a non-extra point" do
       @interpolator.remove_point p(1,1)      
-      @interpolator.grade_lower_to_points_count.should == false
+      @interpolator.minimal_grade.should == false
     end
 
 
     it "should return true after adding a point" do
       @interpolator.add_point p(11,1)
-      @interpolator.grade_lower_to_points_count.should == true
+      @interpolator.minimal_grade.should == true
     end
   end
   
