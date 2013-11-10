@@ -131,7 +131,7 @@ class Canvas < JPanel
   end
   
   def paintComponent g
-    super g
+    super
     self.draw_function g unless not @model.drawable
   end
   

@@ -76,6 +76,7 @@ class WindowPoints < JFrame
       self.add descriptionLabel
       self.add list
       self.add closeButton
+      self.getRootPane.setDefaultButton closeButton
       
       window_size = Dimension.new window_width, window_height
       self.getContentPane.setPreferredSize window_size
