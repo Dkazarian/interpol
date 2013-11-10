@@ -4,7 +4,7 @@ require_relative '../src/model/interpolator.rb'
 describe Interpolator do
   
   before :each do
-    @interpolator = Interpolator.new
+    @interpolator = Interpolator.new    
   end
   
   context "when using the example of page 85" do
@@ -18,7 +18,7 @@ describe Interpolator do
                   p(7,151)
               ]
       @interpolator.points = @points
-      @interpolator.interpolate
+      @interpolator.interpolate!    
     end
     
     it "should obtain the correct amount of deltas" do
@@ -70,50 +70,60 @@ describe Interpolator do
     
 
   end
-  describe :interpolate do
+
+
+  describe :interpolate! do
+
     it "should not explode when doing this thing that mades it explode(?)" do
       [p(1,4), p(0,5), p(123,4)].each {|p| @interpolator.add_point p}
-      @interpolator.interpolate
+      @interpolator.interpolate!
       @interpolator.add_point p(0,4)
-      @interpolator.interpolate
+      @interpolator.interpolate!
     end
 
     it "should not explode when interpolating after removing points" do
       [p(1,1), p(0,0), p(2,2)].each {|p| @interpolator.add_point p}
-      @interpolator.interpolate
+      @interpolator.interpolate!
       [p(0,0), p(2,2), p(1,1)].each do |p| 
         @interpolator.remove_point p
-        @interpolator.interpolate
+        @interpolator.interpolate!
       end
     end
 
     context "when removing an extra point" do
       it "should not recalculate the polynomial" do
         [p(1,1), p(0,0), p(2,2)].each {|p| @interpolator.add_point p}
-        @interpolator.interpolate.should == true      
+
+        @interpolator.interpolate!
+
         @interpolator.remove_point p(2,2)
-        @interpolator.interpolate.should == false
+        @interpolator.refresh.should==false 
+
       end
     end
 
     context "when adding a point included in the polynomial" do
       it "should not recalculate the polynomial" do
         [p(1,1), p(0,0), p(2,2)].each {|p| @interpolator.add_point p}
-        @interpolator.interpolate.should == true      
+
+        @interpolator.interpolate!
         @interpolator.add_point p(4,4)      
-        @interpolator.interpolate.should == false
+
+        @interpolator.refresh.should == false    
       end
     end
 
     context "when adding a point not included in the polynomial" do
       it "should recalculate the polynomial" do
         [p(1,1), p(0,0), p(2,2)].each {|p| @interpolator.add_point p}
-        @interpolator.interpolate.should == true
+        @interpolator.interpolate!       
+
         @interpolator.add_point p(10,4)
-        @interpolator.interpolate.should == true
+        @interpolator.refresh.should==true 
       end
     end
   end
+
   describe :grade_lower_to_points_count do
       before :each do
       @points = [
@@ -121,7 +131,7 @@ describe Interpolator do
                   p(2,2)
               ]
       @interpolator.points = @points
-      @interpolator.interpolate
+      @interpolator.interpolate!
     end
     
     it "should return true after interpolating" do
@@ -131,7 +141,7 @@ describe Interpolator do
 
     it "should return true after removing an extra point" do
       @interpolator.add_point p(3,3)
-      @interpolator.interpolate.should == false
+      @interpolator.interpolate!
       @interpolator.remove_point p(2,2)
       @interpolator.grade_lower_to_points_count.should == true
     end

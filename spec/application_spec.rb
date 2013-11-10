@@ -11,7 +11,7 @@ describe CommandLine do
   # it "should not explode" do    
   #   exec_commands [
   #   	"add 1,1 0,0 2,2", 
-  #   	"interpolate", 
+  #   	"interpolate!", 
   #   	"rm 0,0",
   #   	"rm 2,2",
   #   	"rm 1,1"
