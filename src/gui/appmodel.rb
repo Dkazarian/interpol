@@ -27,8 +27,12 @@ class Model
     interpolator.evaluate x
   end
   
-  def interpolate
-    interpolator.interpolate
+  def interpolate!
+    interpolator.interpolate!
+  end
+  
+  def refresh
+    interpolator.refresh
   end
   
   def drawable

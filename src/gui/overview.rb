@@ -41,8 +41,8 @@ class Overview < JFrame
       #Program > Interpolate
       itemInterpolate = JMenuItem.new "Interpolate"
       itemInterpolate.addActionListener do |e|
-        model.interpolate
-        #TODO mostrar el resultado en un dialog
+        model.interpolate!
+        itemInterpolate.setEnabled false
       end
       itemInterpolate.setMnemonic KeyEvent::VK_I
       itemInterpolate.setToolTipText "Interpolate current points"
@@ -50,7 +50,8 @@ class Overview < JFrame
       #Program > Refresh
       itemRefresh = JMenuItem.new "Refresh"
       itemRefresh.addActionListener do |e|
-          canvas.redraw -50, -50, 100, 100
+        model.refresh
+        canvas.redraw -50, -50, 100, 100
       end
       itemRefresh.setMnemonic KeyEvent::VK_R
       itemRefresh.setToolTipText "Refresh draw"
