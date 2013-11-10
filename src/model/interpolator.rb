@@ -111,10 +111,6 @@ class Interpolator
     @progressive_polynomial
   end
 
-  def new_point_included point
-    polynomial and polynomial.includes? point
-  end
-
   def grade_lower_to_points_count
     polynomial and deltas.length-1 < points.length
   end
