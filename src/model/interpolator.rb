@@ -157,11 +157,15 @@ class Interpolator
     terms = []
     for i in 0..deltas.length-1
       if deltas[i] != 0
-        terms << "#{deltas[i]}*#{send product, i}" 
+        product_string = send product, i
+        if product_string!=""
+          terms << "#{deltas[i]}*#{product_string}" 
+        else
+          terms << deltas[i].to_s
+        end
       end
     end
-
-    (terms*" + ").gsub("- -","+ ").gsub("+ -","- ")    
+    (terms*" + ").gsub("* + ","").gsub("- -","+ ").gsub("+ -","- ")   
   end
   
 

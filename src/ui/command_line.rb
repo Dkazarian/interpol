@@ -41,8 +41,8 @@ class CommandLine
     puts ("="*40).yellow
     describe_command "add x1,y1 x2,y2 xn,yn", "Agrega punto/s" 
     describe_command "rm x1,y1 x2,y2 xn,yn", "Remueve punto/s"
-    describe_command "interpolate", "Muestra o calcula el polinomio interpolador"
-    describe_command "evaluate x",  "Evalua el polinomio en x"
+    describe_command "interpolate", "Muestra o calcula el polinomio interpolador. Atajo: #{"int".cyan}."
+    describe_command "evaluate x",  "Evalua el polinomio en x. Atajo: #{"eval".cyan}."
     describe_command "points", "Muestra la lista actual de puntos"
     describe_command "clear", "Limpia la lista de puntos"    
     describe_command "deltas", "Muestra la tabla de deltas"
@@ -75,13 +75,21 @@ class CommandLine
     @interpolator.interpolate!
   end
   
+  def cmd_int params
+    cmd_interpolate params
+  end
+
+  def cmd_eval params
+    cmd_evaluate params
+  end
+
   #Le pide al interpolador que evalue un punto en el polinomio
   def cmd_evaluate params
     x = Float(params[0]) rescue nil
     if x
       puts @interpolator.evaluate(x).to_s.yellow 
     else
-      puts "No se puede evaluar '#{params[0].red}'".red
+      puts "No se puede evaluar '#{params[0]}'".red
     end
   end 
   
