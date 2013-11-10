@@ -21,6 +21,7 @@ class CommandLine
   end   
 
 
+
   ####################################################################
   #<* ><|<* ><|<* ><|<* ><|<* ><|COMANDOS|><|<* ><|<* ><|<* ><|<* ><|#                  
   ####################################################################
@@ -32,9 +33,9 @@ class CommandLine
 
   def cmd_help params = nil  
     
-    puts "="*40
+    puts ("="*40).yellow
     puts "Comandos disponibles"
-    puts "="*40
+    puts ("="*40).yellow
     puts "add x1,y1 x2,y2 xn,yn\tAgrega punto/s" 
     puts "rm x1,y1 x2,y2 xn,yn\tRemueve punto/s"
     puts "interpolate\tMuestra o calcula el polinomio interpolador"
@@ -44,7 +45,7 @@ class CommandLine
     puts "deltas\tMuestra la tabla de deltas"
     puts "help\tMuestra comandos disponibles"
     puts "quit\tSalir"
-    puts "="*40
+    puts ("="*40).yellow
     puts "Escriba 'demo' para ver un ejemplo"
     puts ""
     
@@ -74,18 +75,18 @@ class CommandLine
   #Le pide al interpolador que evalue un punto en el polinomio
   def cmd_evaluate params
     x = Float(params[0]) rescue nil
-    puts @interpolator.evaluate(x) if x
+    puts @interpolator.evaluate(x).to_s.yellow if x
   end 
   
   #Imprime la lista de puntos
   def cmd_points params = nil
-    puts @interpolator.points.length > 0? "#{@interpolator.points*"\n"}" : "No se ingresaron puntos."
+    puts @interpolator.points.length > 0? "#{@interpolator.points*"\n"}".green : "No se ingresaron puntos.".green
   end
   
   #Resetea
   def cmd_clear params = nil
     reset
-    puts "Se eliminaron todos los puntos."
+    puts "Se eliminaron todos los puntos.".green
   end
  
   def cmd_deltas params = nil
@@ -93,7 +94,7 @@ class CommandLine
     length = deltas.length - 1
     for ii in 0..length
       for i in 0..length-ii
-        print "#{deltas[i][ii]}\t"
+        print "#{deltas[i][ii]}\t".yellow
       end
       puts ""
     end
@@ -121,7 +122,7 @@ class CommandLine
       puts ""
       sleep 2
     end
-    puts "\n\t\t**Fin de la demostracion**\n\n"
+    puts "\n\t\t**Fin de la demostracion**\n\n".yellow
   end
 
   
@@ -145,7 +146,7 @@ class CommandLine
   def print_interpolator_info params
     if @show_info
       puts ""
-      puts params
+      puts params.green
     end
   end
 
@@ -164,7 +165,7 @@ class CommandLine
     if self.respond_to? "cmd_#{command}"
       send("cmd_#{command}", params)
     else
-      puts "No existe el comando #{command}. Para ver los comandos, use help"
+      puts "No existe el comando #{command}. Para ver los comandos, use help".red
     end
   end
   
@@ -172,12 +173,12 @@ class CommandLine
 
   def polynomial_changed params
     puts ""
-    puts "*"*20
+    puts ("*"*20).yellow
     puts "Progresivo: "
     puts "p(x) = " + @interpolator.progressive_polynomial.to_s
     puts "Regresivo: "
     puts "p(x) = " + @interpolator.regressive_polynomial.to_s
-    puts "*"*20
+    puts ("*"*20).yellow
   end
 
   #Convierte los strings "x,y" de la lista a formato punto 
@@ -188,7 +189,26 @@ class CommandLine
     Point.parse_list(list).each {|p| @interpolator.send(method,p)}
     @interpolator.refresh
   rescue PointFormatException => e
-    puts e.message
+    puts e.message.red
   end
 
+end
+
+class String
+  # colorization
+  def colorize(color_code)
+    "\e[#{color_code}m#{self}\e[0m"
+  end
+
+  def red
+    colorize(31)
+  end
+
+  def green
+    colorize(32)
+  end
+
+  def yellow
+    colorize(33)
+  end
 end
