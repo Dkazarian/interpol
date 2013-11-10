@@ -30,6 +30,8 @@ class Overview < JFrame
     def initGUI model
       canvas = Canvas.new
       canvas.setModel model
+      canvas.reset
+      model.interpolator.add_listener Overview, :polynomial_changed, :refresh
       
       menubar = JMenuBar.new
       #icon = ImageIcon.new "exit.
@@ -50,8 +52,7 @@ class Overview < JFrame
       #Program > Refresh
       itemRefresh = JMenuItem.new "Refresh"
       itemRefresh.addActionListener do |e|
-        model.refresh
-        canvas.redraw -50, -50, 100, 100
+        refresh nil
       end
       itemRefresh.setMnemonic KeyEvent::VK_R
       itemRefresh.setToolTipText "Refresh draw"
@@ -114,6 +115,10 @@ class Overview < JFrame
       self.setVisible true
     end
     
+    def refresh params
+      canvas.redraw_and_reset
+    end
+    
 end
 
 
@@ -128,6 +133,18 @@ class Canvas < JPanel
     @y = y
     @width = width
     @height = height
+    self.repaint
+  end
+  
+  def reset
+    @x = 0
+    @y = 0
+    @width = 100
+    @height = 100
+  end
+  
+  def redraw_and_reset
+    self.reset
     self.repaint
   end
   
@@ -149,7 +166,9 @@ class Canvas < JPanel
     #nos guardamos la antitransformacion
     at = g.getTransform
     #transformamos a coordenadas cartesianas
-    g.translate hw, hh
+    translation_x = hw - @x
+    translation_y = hh - @y
+    g.translate translation_x, translation_y
     g.scale 1, -1
     
 #    g.setColor(Color.new(125, 167, 116))
@@ -160,7 +179,7 @@ class Canvas < JPanel
     g.drawLine -hh, 0, hh, 0
     
     #dibujamos la funcion
-    for x in -hw..hw
+    for x in translation_x - 2 * hw..translation_x
       y = @model.evaluate x
       last_x = x if x == -hw
       last_y = y if x == -hw
@@ -172,4 +191,13 @@ class Canvas < JPanel
     #antitransformamos
     g.setTransform at
   end
+  
+  
+  
+  def mouseDragged event
+    @x = event.x
+    @y = event.y
+    self.repaint
+  end
+  
 end
