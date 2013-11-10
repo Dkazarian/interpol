@@ -29,9 +29,10 @@ class Overview < JFrame
     
     def initGUI model
       canvas = Canvas.new
+      @canvas = canvas
       canvas.setModel model
       canvas.reset
-      model.interpolator.add_listener Overview, :polynomial_changed, :refresh
+      model.interpolator.add_listener self, :polynomial_changed, :refresh
       
       menubar = JMenuBar.new
       #icon = ImageIcon.new "exit.
@@ -116,7 +117,7 @@ class Overview < JFrame
     end
     
     def refresh params
-      canvas.redraw_and_reset
+      @canvas.redraw_and_reset
     end
     
 end
