@@ -31,22 +31,25 @@ class CommandLine
     @exit = true
   end
 
+  def describe_command cmd, desc
+    puts "#{cmd.cyan} \t#{desc}"
+  end
   def cmd_help params = nil  
     
     puts ("="*40).yellow
     puts "Comandos disponibles"
     puts ("="*40).yellow
-    puts "add x1,y1 x2,y2 xn,yn\tAgrega punto/s" 
-    puts "rm x1,y1 x2,y2 xn,yn\tRemueve punto/s"
-    puts "interpolate\tMuestra o calcula el polinomio interpolador"
-    puts "evaluate x\tEvalua el polinomio en x"
-    puts "points\tMuestra la lista actual de puntos"
-    puts "clear\tLimpia la lista de puntos"    
-    puts "deltas\tMuestra la tabla de deltas"
-    puts "help\tMuestra comandos disponibles"
-    puts "quit\tSalir"
+    describe_command "add x1,y1 x2,y2 xn,yn", "Agrega punto/s" 
+    describe_command "rm x1,y1 x2,y2 xn,yn", "Remueve punto/s"
+    describe_command "interpolate", "Muestra o calcula el polinomio interpolador"
+    describe_command "evaluate x",  "Evalua el polinomio en x"
+    describe_command "points", "Muestra la lista actual de puntos"
+    describe_command "clear", "Limpia la lista de puntos"    
+    describe_command "deltas", "Muestra la tabla de deltas"
+    describe_command "help", "Muestra comandos disponibles"
+    describe_command "quit", "Salir"
     puts ("="*40).yellow
-    puts "Escriba 'demo' para ver un ejemplo"
+    puts "Escriba #{"demo".cyan} para ver un ejemplo"
     puts ""
     
   end
@@ -75,7 +78,11 @@ class CommandLine
   #Le pide al interpolador que evalue un punto en el polinomio
   def cmd_evaluate params
     x = Float(params[0]) rescue nil
-    puts @interpolator.evaluate(x).to_s.yellow if x
+    if x
+      puts @interpolator.evaluate(x).to_s.yellow 
+    else
+      puts "No se puede evaluar '#{params[0].red}'".red
+    end
   end 
   
   #Imprime la lista de puntos
@@ -109,11 +116,12 @@ class CommandLine
       "deltas",
       "evaluate 6",
       "evaluate 7",
-      "evaluate elefante",
+      "evaluate tortuga",
       "evaluate -4.2",
       "add 0,0",
       "rm 4,13",
-      "rm 7,151"
+      "rm 7,151", 
+      "clear"
       ]
     commands.each do |cmd|
       puts "\n> #{cmd}\n"
@@ -165,7 +173,7 @@ class CommandLine
     if self.respond_to? "cmd_#{command}"
       send("cmd_#{command}", params)
     else
-      puts "No existe el comando #{command}. Para ver los comandos, use help".red
+      puts "No existe el comando '#{command}'. Para ver los comandos, use help".red
     end
   end
   
@@ -210,5 +218,9 @@ class String
 
   def yellow
     colorize(33)
+  end
+
+  def cyan
+    colorize(36)
   end
 end
