@@ -1,14 +1,15 @@
+require_relative "events"
 class Interpolator
+  include Events
+  attr_accessor :points
   
-  attr_accessor :points, :verbose
-  
-  def initialize
+  def initialize 
     @points = []
-    @verbose = false
   end
   
+
   def trace msj
-    puts msj if @verbose    
+    notify :info, msj 
   end
     
   def remove_point point    
@@ -20,32 +21,28 @@ class Interpolator
     @points<<point        
   end
 
-  def must_recalculate
-    if polynomial
-      unless @points.detect {|p| not polynomial.includes? p}
-        return !grade_lower_to_points_count
-      end
+  def refresh
+    if polynomial and (!grade_lower_to_points_count or @points.any?{|point| not polynomial.includes? point})
+      interpolate!
+      true
+    else 
+      false
     end
-    true
   end
 
-  #Calcula los polinomios si es necesario
-  def interpolate 
+  #Calcula los polinomios
+  def interpolate! 
     
-    if must_recalculate 
-      
-      trace("Construyendo polinomio progresivo.")
-      @progressive_polynomial = Polynomial.new polynomial_string(progressive_deltas, :progressive_product)
-      
-      
-      trace("Construyendo polinomio regresivo.")
-      @regressive_polynomial = Polynomial.new polynomial_string(regressive_deltas, :regressive_product)      
+    calculate_deltas
 
-      return true
-
-    end 
-
-    false   
+    trace("Construyendo polinomio progresivo.")
+    @progressive_polynomial = Polynomial.new polynomial_string(progressive_deltas, :progressive_product)
+      
+      
+    trace("Construyendo polinomio regresivo.")
+    @regressive_polynomial = Polynomial.new polynomial_string(regressive_deltas, :regressive_product)      
+     
+    notify :polynomial_changed
   end
 
   def deltas
@@ -55,7 +52,7 @@ class Interpolator
   
   #Evalua el punto en uno de los polinomios. Interpola si no estaba calculado.
   def evaluate x    
-    interpolate unless polynomial
+    interpolate! unless polynomial
     polynomial.evaluate x     
   end
 
@@ -114,12 +111,8 @@ class Interpolator
     @progressive_polynomial
   end
 
-  def new_point_included point
-    polynomial and polynomial.includes? point
-  end
-
   def grade_lower_to_points_count
-    polynomial and deltas.length-1 < points.length 
+    polynomial and deltas.length-1 < points.length
   end
 
   
