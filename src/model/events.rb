@@ -3,7 +3,7 @@ module Events
 	def add_listener listener, event, handler=nil
 		add_event event
 		handler = event unless handler
-		@listeners[event] << {listener: listener, handler:handler}
+		@listeners[event] << {:listener=> listener, :handler=> handler}
 	end
 
 	def add_event event
