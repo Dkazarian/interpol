@@ -34,7 +34,7 @@ class Overview < JFrame
       canvas.setModel model
       model.interpolator.add_listener self, :polynomial_changed, :refresh
       
-      scroll = JScrollPane.new
+      scroll = JScrollPane.new canvas
       
       
       menubar = JMenuBar.new
@@ -111,7 +111,6 @@ class Overview < JFrame
       #################################################### Window
       self.setJMenuBar menubar
       
-      scroll.setViewportView canvas
       self.getContentPane.add scroll
       
       self.setDefaultCloseOperation JFrame::EXIT_ON_CLOSE
@@ -121,7 +120,9 @@ class Overview < JFrame
     end
     
     def refresh params
-      @canvas.repaint
+      canvas = @canvas
+      canvas.set_size 1000, 1000
+      canvas.repaint
     end
     
 end
@@ -177,4 +178,7 @@ class Canvas < JPanel
     g.setTransform at
   end
   
+  def set_size w, h
+    self.setPreferredSize Dimension.new(w, h)
+  end
 end
