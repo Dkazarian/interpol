@@ -3,6 +3,7 @@ include Java
 import java.awt.event.KeyEvent
 import javax.swing.JButton
 import javax.swing.JFrame
+import javax.swing.JScrollPane
 import javax.swing.JMenuBar
 import javax.swing.JMenuItem
 import javax.swing.JMenu
@@ -31,8 +32,10 @@ class Overview < JFrame
       canvas = Canvas.new
       @canvas = canvas
       canvas.setModel model
-      canvas.reset
       model.interpolator.add_listener self, :polynomial_changed, :refresh
+      
+      scroll = JScrollPane.new
+      
       
       menubar = JMenuBar.new
       #icon = ImageIcon.new "exit.
@@ -50,13 +53,13 @@ class Overview < JFrame
       itemInterpolate.setMnemonic KeyEvent::VK_I
       itemInterpolate.setToolTipText "Interpolate current points"
 
-      #Program > Refresh
-      itemRefresh = JMenuItem.new "Refresh"
-      itemRefresh.addActionListener do |e|
-        refresh nil
-      end
-      itemRefresh.setMnemonic KeyEvent::VK_R
-      itemRefresh.setToolTipText "Refresh draw"
+#      #Program > Refresh
+#      itemRefresh = JMenuItem.new "Refresh"
+#      itemRefresh.addActionListener do |e|
+#        refresh nil
+#      end
+#      itemRefresh.setMnemonic KeyEvent::VK_R
+#      itemRefresh.setToolTipText "Refresh draw"
       
       #Program > Exit
       itemExit = JMenuItem.new "Exit"#, icon
@@ -67,8 +70,8 @@ class Overview < JFrame
       itemExit.setToolTipText "Exit application"
 
       programMenu.add itemInterpolate
-      programMenu.addSeparator
-      programMenu.add itemRefresh
+#      programMenu.addSeparator
+#      programMenu.add itemRefresh
       programMenu.addSeparator
       programMenu.add itemExit
       menubar.add programMenu
@@ -108,7 +111,8 @@ class Overview < JFrame
       #################################################### Window
       self.setJMenuBar menubar
       
-      self.getContentPane.add canvas
+      scroll.setViewportView canvas
+      self.getContentPane.add scroll
       
       self.setDefaultCloseOperation JFrame::EXIT_ON_CLOSE
       self.setSize 500, 500
@@ -117,7 +121,7 @@ class Overview < JFrame
     end
     
     def refresh params
-      @canvas.redraw_and_reset
+      @canvas.repaint
     end
     
 end
@@ -127,26 +131,6 @@ class Canvas < JPanel
   
   def setModel model
     @model = model
-  end
-  
-  def redraw x, y, width, height
-    @x = x
-    @y = y
-    @width = width
-    @height = height
-    self.repaint
-  end
-  
-  def reset
-    @x = 0
-    @y = 0
-    @width = 100
-    @height = 100
-  end
-  
-  def redraw_and_reset
-    self.reset
-    self.repaint
   end
   
   def paintComponent g
@@ -167,8 +151,8 @@ class Canvas < JPanel
     #nos guardamos la antitransformacion
     at = g.getTransform
     #transformamos a coordenadas cartesianas
-    translation_x = hw - @x
-    translation_y = hh - @y
+    translation_x = hw
+    translation_y = hh
     g.translate translation_x, translation_y
     g.scale 1, -1
     
@@ -191,14 +175,6 @@ class Canvas < JPanel
     
     #antitransformamos
     g.setTransform at
-  end
-  
-  
-  
-  def mouseDragged event
-    @x = event.x
-    @y = event.y
-    self.repaint
   end
   
 end
