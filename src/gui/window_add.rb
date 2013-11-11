@@ -51,6 +51,7 @@ class WindowAdd < JFrame
 
       closeButton = JButton.new "Close"
       closeButton.addActionListener do |e|
+        model.refresh
         self.dispose
       end
       closeButton.setBounds window_width - 2 * field_width, window_height - field_height, field_width, field_height
