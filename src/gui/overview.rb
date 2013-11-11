@@ -120,9 +120,7 @@ class Overview < JFrame
     end
     
     def refresh params
-      canvas = @canvas
-      canvas.set_size 1000, 1000
-      canvas.repaint
+      @canvas.repaint
     end
     
 end
@@ -135,6 +133,22 @@ class Canvas < JPanel
   end
   
   def paintComponent g
+    points = @model.points
+    if points.length > 0
+      
+      pointsX = points.map{|p| p.x}
+      minx = pointsX.min
+      maxx = pointsX.max
+      deltax = (minx - maxx).abs
+      
+      pointsY = points.map{|p| p.y}
+      miny = pointsY.min
+      maxy = pointsY.max
+      deltay = (miny - maxy).abs
+      
+      self.set_size deltax, deltay
+    end
+    
     super
     self.draw_function g unless not @model.drawable
   end
