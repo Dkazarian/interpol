@@ -170,8 +170,8 @@ class Canvas < JPanel
     color_point = Color.new 230, 0, 0
 
     #other constants
-    w = self.getHeight
-    h = self.getWidth
+    w = self.getWidth
+    h = self.getHeight
     hw = w / 2
     hh = h / 2
     
@@ -200,21 +200,21 @@ class Canvas < JPanel
     g.drawLine 0, -hh, 0, hh
     g.drawLine -hw, 0, hw, 0
     
-    #dibujamos la funcion
-    g.setColor color_function
-    for x in -hw..hw
-      
-      y = @model.evaluate x
-      
-      last_x = x if x == -hw
-      last_y = y if x == -hw
-      
-      g.drawLine last_x, last_y, x, y
-      
-      last_x = x
-      last_y = y
-      
+    #rotamos para poder imprimir texto
+    g.scale 1, -1
+    
+    #imprimimos texto en los ejes
+    g.setColor color_axis
+    g.drawString "x", hw - 10, 10
+    g.drawString "P(x) = y", -70, -hh + 10
+    for i in -grid_size..grid_size
+      string = (grid_size * i).to_s
+      g.drawString string, 3, gridh * i if i != 0 #numeros en el eje y
+      g.drawString string, gridw * i, -3 #numeros en el eje x
     end
+    
+    #rotamos para seguir dibujando
+    g.scale 1, -1
     
     #marcamos los puntos que ingresamos
     points = @model.points
@@ -224,10 +224,28 @@ class Canvas < JPanel
       g.drawLine p.x, 0, p.x, p.y
     end
     
+    #dibujamos la funcion
+    g.setColor color_function
+    for x in -hw..hw
+      
+      y = @model.evaluate x
+      
+      last_x = x if x == -hw
+      last_y = y if x == -hw
+      
+      #dibujamos solamente si el valor de Y esta dentro del rango del visor
+      g.drawLine last_x, last_y, x, y if y.abs < hh && last_y.abs < hh
+      
+      last_x = x
+      last_y = y
+      
+    end
+    
     #rotamos para poder imprimir texto
     g.scale 1, -1
     
     #imprimimos los puntos
+    g.setColor color_point
     for p in points
       g.drawString p.to_s, p.x, -p.y
     end
