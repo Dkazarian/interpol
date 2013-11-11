@@ -32,6 +32,7 @@ class Overview < JFrame
       canvas = Canvas.new
       @canvas = canvas
       canvas.setModel model
+      canvas.setZoom 1
       model.interpolator.add_listener self, :polynomial_changed, :refresh
       
       scroll = JScrollPane.new canvas
@@ -107,6 +108,46 @@ class Overview < JFrame
       pointsMenu.addSeparator
       pointsMenu.add itemView
       menubar.add pointsMenu
+
+      #################################################### View Menu
+      viewMenu = JMenu.new "View"
+      
+      #View > Zoom in
+      itemZoomIn = JMenuItem.new "Zoom in"
+      itemZoomIn.addActionListener do |e|
+        canvas.zoomIn
+        refresh nil
+      end
+      itemZoomIn.setToolTipText "Graph zoom in"
+      #View > Zoom out
+      itemZoomOut = JMenuItem.new "Zoom out"
+      itemZoomOut.addActionListener do |e|
+        canvas.zoomOut
+        refresh nil
+      end
+      itemZoomOut.setToolTipText "Graph zoom out"
+      #View > Duplicate zoom
+      itemDuplicateZoom = JMenuItem.new "Duplicate zoom"
+      itemDuplicateZoom.addActionListener do |e|
+        canvas.duplicateZoom
+        refresh nil
+      end
+      itemDuplicateZoom.setToolTipText "Graph 2x zoom in"
+      #View > Restore zoom
+      itemRestoreZoom = JMenuItem.new "Restore zoom"
+      itemRestoreZoom.addActionListener do |e|
+        canvas.setZoom 1
+        refresh nil
+      end
+      itemRestoreZoom.setToolTipText "Graph restore zoom"
+      
+      viewMenu.add itemZoomIn
+      viewMenu.add itemZoomOut
+      viewMenu.addSeparator
+      viewMenu.add itemDuplicateZoom
+      viewMenu.addSeparator
+      viewMenu.add itemRestoreZoom
+      menubar.add viewMenu
       
       #################################################### Window
       self.setJMenuBar menubar
@@ -132,6 +173,22 @@ class Canvas < JPanel
     @model = model
   end
   
+  def setZoom zoom
+    @zoom = zoom
+  end
+  
+  def zoomIn
+    @zoom = @zoom + 1
+  end
+  
+  def zoomOut
+    @zoom = @zoom - 1 if @zoom > 1
+  end
+  
+  def duplicateZoom
+    @zoom = @zoom * 2
+  end
+  
   def paintComponent g
     super
     
@@ -148,7 +205,14 @@ class Canvas < JPanel
       maxy = pointsY.max.to_int + 1
       maxy = min_size if maxy < min_size
       
-      self.set_size 2 * maxx + extra_size, 2 * maxy + extra_size
+      w = 2 * maxx + extra_size
+      h = 2 * maxy + extra_size
+      
+      zoom = @zoom
+      zw = w * zoom
+      zh = h * zoom
+      
+      self.set_size zw, zh
       self.draw_function g
     end
   end
