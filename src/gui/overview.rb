@@ -114,7 +114,7 @@ class Overview < JFrame
       self.getContentPane.add scroll
       
       self.setDefaultCloseOperation JFrame::EXIT_ON_CLOSE
-      self.setSize 500, 500
+      self.setSize 650, 500
       self.setLocationRelativeTo nil
       self.setVisible true
     end
@@ -138,20 +138,17 @@ class Canvas < JPanel
     if @model.drawable
       points = @model.points
       min_size = 100
+      extra_size = 50
       
-      pointsX = points.map{|p| p.x}
-      minx = pointsX.min.to_int - 1
+      pointsX = points.map{|p| p.x.abs}
       maxx = pointsX.max.to_int + 1
-      deltax = [minx.abs, maxx.abs].max
-      deltax = min_size if deltax < min_size
+      maxx = min_size if maxx < min_size
       
-      pointsY = points.map{|p| p.y}
-      miny = pointsY.min.to_int - 1
+      pointsY = points.map{|p| p.y.abs}
       maxy = pointsY.max.to_int + 1
-      deltay = [miny.abs, maxy.abs].max
-      deltay = min_size if deltay < min_size
+      maxy = min_size if maxy < min_size
       
-      self.set_size 2 * deltax, 2 * deltay
+      self.set_size 2 * maxx + extra_size, 2 * maxy + extra_size
       self.draw_function g
     end
   end
@@ -207,11 +204,19 @@ class Canvas < JPanel
     g.setColor color_axis
     g.drawString "x", hw - 10, 10
     g.drawString "P(x) = y", -70, -hh + 10
-    for i in -grid_size..grid_size
-      string = (grid_size * i).to_s
-      g.drawString string, 3, gridh * i if i != 0 #numeros en el eje y
-      g.drawString string, gridw * i, -3 #numeros en el eje x
+    for i in 1..grid_size
+      x = gridw * i
+      nx = -x
+      y = -gridh * i
+      ny = -y
+      #numeros en el eje x
+      g.drawString x.to_s, x, -3
+      g.drawString nx.to_s, nx, -3
+      #numeros en el eje y
+      g.drawString y.to_s, 3, y
+      g.drawString ny.to_s, 3, ny
     end
+    g.drawString "0", 3, -3
     
     #rotamos para seguir dibujando
     g.scale 1, -1
