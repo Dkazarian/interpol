@@ -161,17 +161,21 @@ class Canvas < JPanel
   end
   
   def draw_function g
+    #user def constants
     color_back = Color.new 100, 100, 100
     color_grid = Color.new 150, 150, 150
+    grid_size = 10
     color_axis = Color.new 0, 100, 255
     color_function = Color.new 255, 255, 255
-    
-    self.setBackground color_back
-    
+    color_point = Color.new 230, 0, 0
+
+    #other constants
     w = self.getHeight
     h = self.getWidth
     hw = w / 2
     hh = h / 2
+    
+    self.setBackground color_back
     
     #nos guardamos la antitransformacion
     at = g.getTransform
@@ -179,11 +183,7 @@ class Canvas < JPanel
     g.translate hw, hh
     g.scale 1, -1
     
-#    g.setColor(Color.new(125, 167, 116))
-#    g.fillRect 10, 15, 90, 60
-    
     #dibujamos una grilla
-    grid_size = 10
     gridw = (hw / grid_size).to_int
     gridh = (hh / grid_size).to_int
     for i in -grid_size..grid_size
@@ -214,6 +214,22 @@ class Canvas < JPanel
       last_x = x
       last_y = y
       
+    end
+    
+    #marcamos los puntos que ingresamos
+    points = @model.points
+    g.setColor color_point
+    for p in points
+      g.drawLine 0, p.y, p.x, p.y
+      g.drawLine p.x, 0, p.x, p.y
+    end
+    
+    #rotamos para poder imprimir texto
+    g.scale 1, -1
+    
+    #imprimimos los puntos
+    for p in points
+      g.drawString p.to_s, p.x, -p.y
     end
     
     #antitransformamos
