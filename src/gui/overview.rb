@@ -133,24 +133,27 @@ class Canvas < JPanel
   end
   
   def paintComponent g
-    points = @model.points
-    if points.length > 0
+    super
+    
+    if @model.drawable
+      points = @model.points
+      min_size = 100
       
       pointsX = points.map{|p| p.x}
-      minx = pointsX.min
-      maxx = pointsX.max
-      deltax = (minx - maxx).abs
+      minx = pointsX.min.to_int - 1
+      maxx = pointsX.max.to_int + 1
+      deltax = [minx.abs, maxx.abs].max
+      deltax = min_size if deltax < min_size
       
       pointsY = points.map{|p| p.y}
-      miny = pointsY.min
-      maxy = pointsY.max
-      deltay = (miny - maxy).abs
+      miny = pointsY.min.to_int - 1
+      maxy = pointsY.max.to_int + 1
+      deltay = [miny.abs, maxy.abs].max
+      deltay = min_size if deltay < min_size
       
-      self.set_size deltax, deltay
+      self.set_size 2 * deltax, 2 * deltay
+      self.draw_function g
     end
-    
-    super
-    self.draw_function g unless not @model.drawable
   end
   
   def drawPoint g, x, y
@@ -158,34 +161,59 @@ class Canvas < JPanel
   end
   
   def draw_function g
-    panel_width = self.getHeight
-    panel_height = self.getWidth
-    hw = panel_width / 2
-    hh = panel_height / 2
+    color_back = Color.new 100, 100, 100
+    color_grid = Color.new 150, 150, 150
+    color_axis = Color.new 0, 100, 255
+    color_function = Color.new 255, 255, 255
+    
+    self.setBackground color_back
+    
+    w = self.getHeight
+    h = self.getWidth
+    hw = w / 2
+    hh = h / 2
     
     #nos guardamos la antitransformacion
     at = g.getTransform
     #transformamos a coordenadas cartesianas
-    translation_x = hw
-    translation_y = hh
-    g.translate translation_x, translation_y
+    g.translate hw, hh
     g.scale 1, -1
     
 #    g.setColor(Color.new(125, 167, 116))
 #    g.fillRect 10, 15, 90, 60
     
+    #dibujamos una grilla
+    grid_size = 10
+    gridw = (hw / grid_size).to_int
+    gridh = (hh / grid_size).to_int
+    for i in -grid_size..grid_size
+      g.setColor color_grid
+      g.drawLine gridw * i, -hh, gridw * i, hh
+      g.drawLine -hw, gridh * i, hw, gridh * i
+  
+      g.setColor  color_axis
+      g.drawLine gridw * i, 3, gridw * i, -3
+      g.drawLine 3, gridh * i, -3, gridh * i
+    end
+    
     #dibujamos los ejes
-    g.drawLine 0, -hw, 0, hw
-    g.drawLine -hh, 0, hh, 0
+    g.drawLine 0, -hh, 0, hh
+    g.drawLine -hw, 0, hw, 0
     
     #dibujamos la funcion
-    for x in translation_x - 2 * hw..translation_x
+    g.setColor color_function
+    for x in -hw..hw
+      
       y = @model.evaluate x
+      
       last_x = x if x == -hw
       last_y = y if x == -hw
+      
       g.drawLine last_x, last_y, x, y
+      
       last_x = x
       last_y = y
+      
     end
     
     #antitransformamos
