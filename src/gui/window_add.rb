@@ -68,7 +68,7 @@ class WindowAdd < JFrame
       self.pack
       self.setResizable false
       
-      self.setDefaultCloseOperation JFrame::EXIT_ON_CLOSE
+      self.setDefaultCloseOperation JFrame::DISPOSE_ON_CLOSE
       self.setLocationRelativeTo nil
       self.setVisible true
     end
