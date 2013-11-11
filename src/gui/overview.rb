@@ -7,12 +7,14 @@ import javax.swing.JScrollPane
 import javax.swing.JMenuBar
 import javax.swing.JMenuItem
 import javax.swing.JMenu
+import javax.swing.JOptionPane
 #import javax.swing.ImageIcon
 import java.lang.System
 
 import java.awt.Graphics
 import java.awt.Color
 import java.awt.Dimension
+
 
 
 require_relative "window_add.rb"
@@ -24,7 +26,7 @@ require_relative "../model/interpolator.rb"
 class Overview < JFrame
   
     def initialize model
-      super "Overview form"
+      super "Interpolator"
       self.initGUI model
     end
     
@@ -148,6 +150,19 @@ class Overview < JFrame
       viewMenu.addSeparator
       viewMenu.add itemRestoreZoom
       menubar.add viewMenu
+      
+      #################################################### Help Menu
+      helpMenu = JMenu.new "Help"
+      
+      #Help > About
+      itemAbout = JMenuItem.new "About..."
+      itemAbout.addActionListener do |e|
+        JOptionPane.showMessageDialog(self, "Interpolator\n\nDaniela Belen Kazarian\nFranco Tomas Hecht\nPablo Santiago Fernandez\n\n2013")
+      end
+      itemAbout.setToolTipText "About Interpolator"
+      
+      helpMenu.add itemAbout
+      menubar.add helpMenu
       
       #################################################### Window
       self.setJMenuBar menubar
