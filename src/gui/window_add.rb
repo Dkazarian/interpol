@@ -30,7 +30,7 @@ class WindowAdd < JFrame
       window_width = 2 * field_width + 3 * separation
       window_height = 3 * separation + 3 * field_height
       
-      descriptionLabel = JLabel.new "description here"
+      descriptionLabel = JLabel.new "Specify a value for X and Y"
       descriptionLabel.setBounds separation, separation, window_width - 2 * separation, field_height
       
       xField = JTextField.new

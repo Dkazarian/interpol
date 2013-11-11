@@ -54,13 +54,13 @@ class Overview < JFrame
       itemInterpolate.setMnemonic KeyEvent::VK_I
       itemInterpolate.setToolTipText "Interpolate current points"
 
-#      #Program > Refresh
-#      itemRefresh = JMenuItem.new "Refresh"
-#      itemRefresh.addActionListener do |e|
-#        refresh nil
-#      end
-#      itemRefresh.setMnemonic KeyEvent::VK_R
-#      itemRefresh.setToolTipText "Refresh draw"
+      #Program > Refresh
+      itemRefresh = JMenuItem.new "Refresh"
+      itemRefresh.addActionListener do |e|
+        refresh nil
+      end
+      itemRefresh.setMnemonic KeyEvent::VK_R
+      itemRefresh.setToolTipText "Refresh draw"
       
       #Program > Exit
       itemExit = JMenuItem.new "Exit"#, icon
@@ -71,8 +71,8 @@ class Overview < JFrame
       itemExit.setToolTipText "Exit application"
 
       programMenu.add itemInterpolate
-#      programMenu.addSeparator
-#      programMenu.add itemRefresh
+      programMenu.addSeparator
+      programMenu.add itemRefresh
       programMenu.addSeparator
       programMenu.add itemExit
       menubar.add programMenu

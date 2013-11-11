@@ -36,7 +36,7 @@ class WindowPoints < JFrame
       window_width = list_width + 2 * separation
       window_height = 3 * separation + 2 * field_height + list_height + 2 * remove_height
       
-      descriptionLabel = JLabel.new "description here"
+      descriptionLabel = JLabel.new "Point list"
       descriptionLabel.setBounds separation, separation, window_width - 2 * separation, field_height
       
       list = JList.new
