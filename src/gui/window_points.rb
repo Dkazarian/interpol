@@ -18,12 +18,12 @@ require_relative "../model/point.rb"
 
 class WindowPoints < JFrame
   
-    def initialize model, title, remove_button
+    def initialize interpolator, title, remove_button
       super title
-      self.initGUI model, remove_button
+      self.initGUI interpolator, remove_button
     end
     
-    def initGUI model, remove_button
+    def initGUI interpolator, remove_button
       self.setLayout nil
       
       separation = 20
@@ -45,23 +45,23 @@ class WindowPoints < JFrame
       listScroller = JScrollPane.new list #TODO la scrollbar no se esta mostrando
       list.setBounds separation, 2 * separation + field_height, list_width, list_height
       
-      refresh_list list, model
+      refresh_list list, interpolator
 
       if remove_button
         removeButton = JButton.new "Remove"
         removeButton.addActionListener do |e|
           return if nothing_selected list
           point = list.getSelectedValue
-          model.rm point
-          refresh_list list, model
+          interpolator.remove_point point
+          refresh_list list, interpolator
         end
         removeButton.setBounds separation, 2 * separation + field_height + list_height, list_width, remove_height
         self.add removeButton
         
         clearButton = JButton.new "Remove all"
         clearButton.addActionListener do |e|
-          model.clear
-          refresh_list list, model
+          interpolator.clear
+          refresh_list list, interpolator
         end
         clearButton.setBounds separation, 2 * separation + field_height + list_height + remove_height, list_width, remove_height
         self.add clearButton
@@ -69,7 +69,7 @@ class WindowPoints < JFrame
 
       closeButton = JButton.new "Close"
       closeButton.addActionListener do |e|
-        model.refresh
+        interpolator.refresh
         self.dispose
       end
       closeButton.setBounds window_width - field_width, window_height - field_height, field_width, field_height
@@ -93,7 +93,7 @@ class WindowPoints < JFrame
       jlist.getSelectedIndex == -1
     end
     
-    def refresh_list jlist, model
-      jlist.setListData model.points.to_java
+    def refresh_list jlist, interpolator
+      jlist.setListData interpolator.points.to_java
     end
 end

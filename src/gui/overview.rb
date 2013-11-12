@@ -25,17 +25,17 @@ require_relative "../model/interpolator.rb"
 
 class Overview < JFrame
   
-    def initialize model
-      super "Interpolator"
-      self.initGUI model
+    def initialize interpolator
+      super "Interpol"
+      self.initGUI interpolator
     end
     
-    def initGUI model
+    def initGUI interpolator
       canvas = Canvas.new
       @canvas = canvas
-      canvas.setModel model
+      canvas.setInterpolator interpolator
       canvas.setZoom 1
-      model.interpolator.add_listener self, :polynomial_changed, :refresh
+      interpolator.add_listener self, :polynomial_changed, :refresh
       
       scroll = JScrollPane.new canvas
       
@@ -50,7 +50,7 @@ class Overview < JFrame
       #Program > Interpolate
       itemInterpolate = JMenuItem.new "Interpolate"
       itemInterpolate.addActionListener do |e|
-        model.interpolate!
+        interpolator.interpolate!
         itemInterpolate.setEnabled false
       end
       itemInterpolate.setMnemonic KeyEvent::VK_I
@@ -86,21 +86,21 @@ class Overview < JFrame
       #Points > Add
       itemAdd = JMenuItem.new "Add..."
       itemAdd.addActionListener do |e|
-        WindowAdd.new model
+        WindowAdd.new interpolator
       end
       itemAdd.setMnemonic KeyEvent::VK_A
       itemAdd.setToolTipText "Add one or multiple points"
       #Points > Remove
       itemRemove = JMenuItem.new "Remove..."
       itemRemove.addActionListener do |e|
-        WindowPoints.new model, "Remove points", true
+        WindowPoints.new interpolator, "Remove points", true
       end
       itemRemove.setMnemonic KeyEvent::VK_R
       itemRemove.setToolTipText "Remove one or multiple points"
       #Points > View
       itemView = JMenuItem.new "View list"
       itemView.addActionListener do |e|
-        WindowPoints.new model, "View points", false
+        WindowPoints.new interpolator, "View points", false
       end
       itemView.setMnemonic KeyEvent::VK_V
       itemView.setToolTipText "View point list"
@@ -184,8 +184,8 @@ end
 
 class Canvas < JPanel
   
-  def setModel model
-    @model = model
+  def setInterpolator interpolator
+    @interpolator = interpolator
   end
   
   def setZoom zoom
@@ -207,8 +207,8 @@ class Canvas < JPanel
   def paintComponent g
     super
     
-    if @model.drawable
-      points = @model.points
+    if @interpolator.polynomial
+      points = @interpolator.points
       min_size = 100
       extra_size = 50
       
@@ -301,7 +301,7 @@ class Canvas < JPanel
     g.scale 1, -1
     
     #marcamos los puntos que ingresamos
-    points = @model.points
+    points = @interpolator.points
     g.setColor color_point
     for p in points
       g.drawLine 0, p.y, p.x, p.y
@@ -312,7 +312,7 @@ class Canvas < JPanel
     g.setColor color_function
     for x in -hw..hw
       
-      y = @model.evaluate x
+      y = @interpolator.evaluate x
       
       last_x = x if x == -hw
       last_y = y if x == -hw
