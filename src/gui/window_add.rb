@@ -16,12 +16,12 @@ require_relative "../model/point.rb"
 
 class WindowAdd < JFrame
   
-    def initialize model
+    def initialize interpolator
       super "Add points"
-      self.initGUI model
+      self.initGUI interpolator
     end
       
-    def initGUI model
+    def initGUI interpolator
       self.setLayout nil
       
       separation = 20
@@ -42,7 +42,8 @@ class WindowAdd < JFrame
       addButton.addActionListener do |e|
         x = xField.getText
         y = yField.getText
-        model.add x, y
+        point = Point.new Float(x), Float(y)
+        interpolator.add_point point
         xField.setText ""
         yField.setText ""
         xField.requestFocus
@@ -51,7 +52,7 @@ class WindowAdd < JFrame
 
       closeButton = JButton.new "Close"
       closeButton.addActionListener do |e|
-        model.refresh
+        interpolator.refresh
         self.dispose
       end
       closeButton.setBounds window_width - 2 * field_width, window_height - field_height, field_width, field_height
