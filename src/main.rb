@@ -12,4 +12,4 @@ require_relative "model/polynomial"
 require_relative "ui/command_line"
 
 
-CommandLine.new.start
+CommandLine.new(Interpolator.new).start

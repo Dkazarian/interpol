@@ -7,7 +7,12 @@ class Interpolator
     @points = []
   end
   
-
+  def clear
+    @deltas = nil
+    @points = []
+    @progressive_polynomial = nil
+    @regressive_polynomial = nil
+  end
   def trace msj
     notify :info, msj 
   end
@@ -165,7 +170,11 @@ class Interpolator
         end
       end
     end
-    (terms*" + ").gsub("* + ","").gsub("- -","+ ").gsub("+ -","- ")   
+    if terms.empty?
+      return "0"
+    else
+      return (terms*" + ").gsub("* + ","").gsub("- -","+ ").gsub("+ -","- ")   
+    end
   end
   
 

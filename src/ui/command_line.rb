@@ -1,9 +1,11 @@
 class CommandLine
   
   #Constructor
-  def initialize 
-     reset
-     @show_info = true
+  def initialize interpolator
+    @interpolator = interpolator
+    @interpolator.add_listener self, :polynomial_changed
+    @interpolator.add_listener self, :info, :print_interpolator_info
+    @show_info = true
   end
 
 
@@ -100,7 +102,7 @@ class CommandLine
   
   #Resetea
   def cmd_clear params = nil
-    reset
+    @interpolator.clear
     puts "Se eliminaron todos los puntos.".green
   end
  
@@ -150,13 +152,6 @@ class CommandLine
   ####################################################################
   private
 
-  #Limpia todo, al usar un Interpolator nuevo se borran
-  #los polinomios y los puntos  (si habian)
-  def reset
-    @interpolator = Interpolator.new
-    @interpolator.add_listener self, :polynomial_changed
-    @interpolator.add_listener self, :info, :print_interpolator_info
-  end 
 
   #handlers 
   def print_interpolator_info params
