@@ -17,7 +17,7 @@ class CommandLine
     
     until @exit
       print "\n\n> "
-      exec_command gets.chop 
+      exec_command gets 
     end
       
   end   
@@ -64,6 +64,7 @@ class CommandLine
   #Agrega todos los puntos en params a la lista del interpolador
   def cmd_add params
     forall_points params, :add_point
+    
   end 
   
   #Remueve todos los puntos de params  
@@ -208,7 +209,11 @@ end
 class String
   # colorization
   def colorize(color_code)
-    "\e[#{color_code}m#{self}\e[0m"
+    if $COLORIZE
+      "\e[#{color_code}m#{self}\e[0m"
+    else
+      self
+    end
   end
 
   def red

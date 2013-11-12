@@ -10,6 +10,13 @@ require_relative "model/interpolator"
 require_relative "model/point"
 require_relative "model/polynomial"
 require_relative "ui/command_line"
+require_relative "gui/overview.rb"
 
-$COLORIZE = true
-CommandLine.new(Interpolator.new).start
+interpolator = Interpolator.new
+console = CommandLine.new interpolator
+t1= Thread.new do 
+	Overview.new(interpolator)
+end
+5.times { puts("")}
+console.start
+abort

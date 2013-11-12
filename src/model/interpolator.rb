@@ -20,11 +20,13 @@ class Interpolator
     
   def remove_point point    
     @points.delete(point) 
+    trace "Eliminado punto: #{point}" 
   end
   
   def add_point point    
     @points = @points.delete_if {|p| p.x == point.x}      
-    @points<<point        
+    @points<<point   
+    trace "Agregado punto: #{point}"     
   end
 
   def refresh
