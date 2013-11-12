@@ -13,6 +13,7 @@ class Interpolator
     @progressive_polynomial = nil
     @regressive_polynomial = nil
   end
+  
   def trace msj
     notify :info, msj 
   end
