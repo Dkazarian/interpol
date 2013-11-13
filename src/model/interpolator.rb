@@ -22,12 +22,14 @@ class Interpolator
   def remove_point point    
     @points.delete(point) 
     trace "Eliminado punto: #{point}" 
+    notify :points_changed
   end
   
   def add_point point    
     @points = @points.delete_if {|p| p.x == point.x}      
     @points<<point   
-    trace "Agregado punto: #{point}"     
+    trace "Agregado punto: #{point}"  
+    notify :points_changed   
   end
 
   def refresh

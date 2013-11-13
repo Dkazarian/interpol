@@ -20,6 +20,7 @@ class WindowPoints < JFrame
   
     def initialize interpolator, title, remove_button
       super title
+      @interpolator = interpolator
       self.initGUI interpolator, remove_button
     end
     
@@ -39,21 +40,22 @@ class WindowPoints < JFrame
       descriptionLabel = JLabel.new "Point list"
       descriptionLabel.setBounds separation, separation, window_width - 2 * separation, field_height
       
-      list = JList.new
+      @list = JList.new
+      list = @list
       list.setSelectionMode ListSelectionModel.SINGLE_INTERVAL_SELECTION
       list.setVisibleRowCount -1
       listScroller = JScrollPane.new list #TODO la scrollbar no se esta mostrando
       list.setBounds separation, 2 * separation + field_height, list_width, list_height
       
-      refresh_list list, interpolator
-
+      refresh_list 
+      interpolator.add_listener self, :points_changed, :refresh_list 
       if remove_button
         removeButton = JButton.new "Remove"
         removeButton.addActionListener do |e|
           return if nothing_selected list
           point = list.getSelectedValue
           interpolator.remove_point point
-          refresh_list list, interpolator
+          refresh_list 
         end
         removeButton.setBounds separation, 2 * separation + field_height + list_height, list_width, remove_height
         self.add removeButton
@@ -61,7 +63,7 @@ class WindowPoints < JFrame
         clearButton = JButton.new "Remove all"
         clearButton.addActionListener do |e|
           interpolator.clear
-          refresh_list list, interpolator
+          refresh_list 
         end
         clearButton.setBounds separation, 2 * separation + field_height + list_height + remove_height, list_width, remove_height
         self.add clearButton
@@ -88,12 +90,12 @@ class WindowPoints < JFrame
       self.setLocationRelativeTo nil
       self.setVisible true
     end
-    
+
     def nothing_selected jlist
       jlist.getSelectedIndex == -1
     end
     
-    def refresh_list jlist, interpolator
-      jlist.setListData interpolator.points.to_java
+    def refresh_list params=nil
+      @list.setListData @interpolator.points.to_java
     end
 end
