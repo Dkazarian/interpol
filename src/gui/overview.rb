@@ -236,14 +236,22 @@ class Canvas < JPanel
     g.drawLine x, y, x, y
   end
   
+  def color r, g, b
+    Color.new r, g, b
+  end
+
+  def sign n
+    n / n.abs
+  end
+
   def draw_function g
     #user def constants
-    color_back = Color.new(100, 100, 100)
-    color_grid = Color.new(150, 150, 150)
+    color_back = color 100, 100, 100
+    color_grid = color 150, 150, 150
     grid_size = 10
-    color_axis = Color.new(0, 100, 255)
-    color_function = Color.new(255, 255, 255)
-    color_point = Color.new(230, 0, 0)
+    color_axis = color 0, 100, 255
+    color_function = color 255, 255, 255
+    color_point = color 230, 0, 0
 
     #other constants
     w = self.getWidth
@@ -310,16 +318,36 @@ class Canvas < JPanel
     
     #dibujamos la funcion
     g.setColor color_function
+    last_x = -hw
     for x in -hw..hw
       
       y = @interpolator.evaluate x
-      
-      last_x = x if x == -hw
       last_y = y if x == -hw
       
-      #dibujamos solamente si el valor de Y esta dentro del rango del visor
-      g.drawLine last_x, last_y, x, y if y.abs < hh && last_y.abs < hh
+
+      shh = -hh
+
+      if (y > hh) ^ (last_y > hh)
+        dy = y - last_y
+        t = (hh - last_y) / dy
+        dx = x - last_x
+        yt = hh
+        xt = last_x + t * dx
+        g.drawLine last_x, last_y, xt, yt if y > hh
+        g.drawLine xt, yt, x, y if last_y > hh
+      elsif (y < shh) ^ (last_y < shh)
+        dy = y - last_y
+        t = (shh - last_y) / dy
+        dx = x - last_x
+        yt = shh
+        xt = last_x + t * dx
+        g.drawLine last_x, last_y, xt, yt if y < shh
+        g.drawLine xt, yt, x, y if last_y < shh
+      elsif y.abs < hh && last_y.abs < hh
+        g.drawLine last_x, last_y, x, y
+      end
       
+
       last_x = x
       last_y = y
       
