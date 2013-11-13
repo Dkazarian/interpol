@@ -45,7 +45,7 @@ class Overview < JFrame
       
       #################################################### Program Menu
       programMenu = JMenu.new "Program"
-      programMenu.setMnemonic KeyEvent::VK_F
+      #programMenu.setMnemonic KeyEvent::VK_F
       
       #Program > Interpolate
       itemInterpolate = JMenuItem.new "Interpolate"
@@ -53,7 +53,7 @@ class Overview < JFrame
         interpolator.interpolate!
         itemInterpolate.setEnabled false
       end
-      itemInterpolate.setMnemonic KeyEvent::VK_I
+      #itemInterpolate.setMnemonic KeyEvent::VK_I
       itemInterpolate.setToolTipText "Interpolate current points"
 
       #Program > Refresh
@@ -61,7 +61,7 @@ class Overview < JFrame
       itemRefresh.addActionListener do |e|
         refresh nil
       end
-      itemRefresh.setMnemonic KeyEvent::VK_R
+      #itemRefresh.setMnemonic KeyEvent::VK_R
       itemRefresh.setToolTipText "Refresh draw"
       
       #Program > Exit
@@ -69,7 +69,7 @@ class Overview < JFrame
       itemExit.addActionListener do |e|
           System.exit 0
       end
-      itemExit.setMnemonic KeyEvent::VK_C
+      #itemExit.setMnemonic KeyEvent::VK_C
       itemExit.setToolTipText "Exit application"
 
       programMenu.add itemInterpolate
@@ -81,28 +81,28 @@ class Overview < JFrame
       
       #################################################### Points Menu
       pointsMenu = JMenu.new "Points"
-      pointsMenu.setMnemonic KeyEvent::VK_P
+      #pointsMenu.setMnemonic KeyEvent::VK_P
       
       #Points > Add
       itemAdd = JMenuItem.new "Add..."
       itemAdd.addActionListener do |e|
         WindowAdd.new interpolator
       end
-      itemAdd.setMnemonic KeyEvent::VK_A
+      #itemAdd.setMnemonic KeyEvent::VK_A
       itemAdd.setToolTipText "Add one or multiple points"
       #Points > Remove
       itemRemove = JMenuItem.new "Remove..."
       itemRemove.addActionListener do |e|
         WindowPoints.new interpolator, "Remove points", true
       end
-      itemRemove.setMnemonic KeyEvent::VK_R
+      #itemRemove.setMnemonic KeyEvent::VK_R
       itemRemove.setToolTipText "Remove one or multiple points"
       #Points > View
       itemView = JMenuItem.new "View list"
       itemView.addActionListener do |e|
         WindowPoints.new interpolator, "View points", false
       end
-      itemView.setMnemonic KeyEvent::VK_V
+      #itemView.setMnemonic KeyEvent::VK_V
       itemView.setToolTipText "View point list"
       
       pointsMenu.add itemAdd
@@ -238,12 +238,12 @@ class Canvas < JPanel
   
   def draw_function g
     #user def constants
-    color_back = Color.new 100, 100, 100
-    color_grid = Color.new 150, 150, 150
+    color_back = Color.new(100, 100, 100)
+    color_grid = Color.new(150, 150, 150)
     grid_size = 10
-    color_axis = Color.new 0, 100, 255
-    color_function = Color.new 255, 255, 255
-    color_point = Color.new 230, 0, 0
+    color_axis = Color.new(0, 100, 255)
+    color_function = Color.new(255, 255, 255)
+    color_point = Color.new(230, 0, 0)
 
     #other constants
     w = self.getWidth

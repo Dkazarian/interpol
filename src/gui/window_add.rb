@@ -46,7 +46,7 @@ class WindowAdd < JFrame
           point = Point.new Float(x), Float(y)
           interpolator.add_point point
         rescue 
-          nil
+          JOptionPane.showMessageDialog(self, "That hurts!!")
         ensure
           xField.setText ""
           yField.setText ""
