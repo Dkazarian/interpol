@@ -1,0 +1,1 @@
+jruby -W0 src/interpol.rb
