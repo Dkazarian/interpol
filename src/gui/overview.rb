@@ -59,7 +59,7 @@ class Overview < JFrame
       #Program > Refresh
       itemRefresh = JMenuItem.new "Refresh"
       itemRefresh.addActionListener do |e|
-        refresh nil
+        refresh
       end
       #itemRefresh.setMnemonic KeyEvent::VK_R
       itemRefresh.setToolTipText "Refresh draw"
@@ -118,28 +118,28 @@ class Overview < JFrame
       itemZoomIn = JMenuItem.new "Zoom in"
       itemZoomIn.addActionListener do |e|
         canvas.zoomIn
-        refresh nil
+        refresh
       end
       itemZoomIn.setToolTipText "Graph zoom in"
       #View > Zoom out
       itemZoomOut = JMenuItem.new "Zoom out"
       itemZoomOut.addActionListener do |e|
         canvas.zoomOut
-        refresh nil
+        refresh
       end
       itemZoomOut.setToolTipText "Graph zoom out"
       #View > Duplicate zoom
       itemDuplicateZoom = JMenuItem.new "Duplicate zoom"
       itemDuplicateZoom.addActionListener do |e|
         canvas.duplicateZoom
-        refresh nil
+        refresh
       end
       itemDuplicateZoom.setToolTipText "Graph 2x zoom in"
       #View > Restore zoom
       itemRestoreZoom = JMenuItem.new "Restore zoom"
       itemRestoreZoom.addActionListener do |e|
         canvas.setZoom 1
-        refresh nil
+        refresh
       end
       itemRestoreZoom.setToolTipText "Graph restore zoom"
       
@@ -175,7 +175,7 @@ class Overview < JFrame
       self.setVisible true
     end
     
-    def refresh params
+    def refresh params=nil
       @canvas.repaint
     end
     

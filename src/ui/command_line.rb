@@ -33,10 +33,14 @@ class CommandLine
     @exit = true
   end
 
+  def cmd_exit params = nil
+    cmd_quit params
+  end
+
   def describe_command cmd, desc
     puts "#{cmd.cyan} \t#{desc}"
   end
-  def cmd_help params = nil  
+  def cmd_help params = nil
     
     puts ("="*40).yellow
     puts "Comandos disponibles"
@@ -72,6 +76,9 @@ class CommandLine
     forall_points params, :remove_point
   end 
   
+  def cmd_remove params
+    cmd_rm params
+  end
 
   #Le dice al interpolador que interpole
   def cmd_interpolate params = nil
@@ -80,10 +87,6 @@ class CommandLine
   
   def cmd_int params
     cmd_interpolate params
-  end
-
-  def cmd_eval params
-    cmd_evaluate params
   end
 
   #Le pide al interpolador que evalue un punto en el polinomio
@@ -95,6 +98,10 @@ class CommandLine
       puts "No se puede evaluar '#{params[0]}'".red
     end
   end 
+
+  def cmd_eval params
+    cmd_evaluate params
+  end
   
   #Imprime la lista de puntos
   def cmd_points params = nil
@@ -105,6 +112,10 @@ class CommandLine
   def cmd_clear params = nil
     @interpolator.clear
     puts "Se eliminaron todos los puntos.".green
+  end
+
+  def cmd_clr params = nil
+    cmd_clear params
   end
  
   def cmd_deltas params = nil
