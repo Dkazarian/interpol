@@ -173,24 +173,28 @@ class CommandLine
   #     command: "add"
   #     params: ["x1,y1", "x2,y2", "x3,y3"]
   def exec_command input
-    command, *params = input.split(/\s/) 
-    if self.respond_to? "cmd_#{command}"
-      send("cmd_#{command}", params)
-    else
-      puts "No existe el comando '#{command}'. Para ver los comandos, use help".red
+    if input
+      command, *params = input.split(/\s/) 
+      if self.respond_to? "cmd_#{command}"
+        send("cmd_#{command}", params)
+      else
+        puts "No existe el comando '#{command}'. Para ver los comandos, use help".red
+      end
     end
   end
   
 
 
   def polynomial_changed params
-    puts ""
-    puts ("*"*20).yellow
-    puts "Progresivo: "
-    puts "p(x) = " + @interpolator.progressive_polynomial.to_s
-    puts "Regresivo: "
-    puts "p(x) = " + @interpolator.regressive_polynomial.to_s
-    puts ("*"*20).yellow
+    if @interpolator.polynomial
+      puts ""
+      puts ("*"*20).yellow
+      puts "Progresivo: "
+      puts "p(x) = " + @interpolator.progressive_polynomial.to_s
+      puts "Regresivo: "
+      puts "p(x) = " + @interpolator.regressive_polynomial.to_s
+      puts ("*"*20).yellow
+    end
   end
 
   #Convierte los strings "x,y" de la lista a formato punto 

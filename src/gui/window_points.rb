@@ -67,7 +67,7 @@ class WindowPoints < JFrame
         self.add clearButton
       end
 
-      closeButton = JButton.new "Close"
+      closeButton = JButton.new "Finish"
       closeButton.addActionListener do |e|
         interpolator.refresh
         self.dispose

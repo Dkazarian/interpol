@@ -40,19 +40,28 @@ class WindowAdd < JFrame
       
       addButton = JButton.new "Add"
       addButton.addActionListener do |e|
-        x = xField.getText
-        y = yField.getText
-        point = Point.new Float(x), Float(y)
-        interpolator.add_point point
-        xField.setText ""
-        yField.setText ""
-        xField.requestFocus
+        begin
+          x = xField.getText
+          y = yField.getText
+          point = Point.new Float(x), Float(y)
+          interpolator.add_point point
+        rescue 
+          nil
+        ensure
+          xField.setText ""
+          yField.setText ""
+          xField.requestFocus
+        end
       end
       addButton.setBounds window_width - field_width, window_height - field_height, field_width, field_height
 
-      closeButton = JButton.new "Close"
+      closeButton = JButton.new "Finish"
       closeButton.addActionListener do |e|
-        interpolator.refresh
+        if interpolator.polynomial
+          interpolator.refresh
+        else
+          interpolator.interpolate!
+        end
         self.dispose
       end
       closeButton.setBounds window_width - 2 * field_width, window_height - field_height, field_width, field_height

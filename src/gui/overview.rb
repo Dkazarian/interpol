@@ -205,9 +205,9 @@ class Canvas < JPanel
   end
   
   def paintComponent g
-    super
+    super 
     
-    if @interpolator.polynomial
+    unless @interpolator.points.empty?
       points = @interpolator.points
       min_size = 100
       extra_size = 50
@@ -228,7 +228,7 @@ class Canvas < JPanel
       zh = h * zoom
       
       self.set_size zw, zh
-      self.draw_function g
+      self.draw_function g if @interpolator.polynomial
     end
   end
   

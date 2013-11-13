@@ -4,7 +4,7 @@ class Interpolator
   attr_accessor :points
   
   def initialize 
-    @points = []
+    clear
   end
   
   def clear
@@ -12,6 +12,7 @@ class Interpolator
     @points = []
     @progressive_polynomial = nil
     @regressive_polynomial = nil
+    notify :polynomial_changed
   end
   
   def trace msj
@@ -173,11 +174,9 @@ class Interpolator
         end
       end
     end
-    if terms.empty?
-      return "0"
-    else
-      return (terms*" + ").gsub("* + ","").gsub("- -","+ ").gsub("+ -","- ")   
-    end
+    string = (terms*" + ").gsub("* + ","").gsub("- -","+ ").gsub("+ -","- ")   
+   
+    (string == "")? "0" : string
   end
   
 
