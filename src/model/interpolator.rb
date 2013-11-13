@@ -4,14 +4,19 @@ class Interpolator
   attr_accessor :points
   
   def initialize 
-    clear
+    reset
   end
   
-  def clear
+  def reset
     @deltas = nil
     @points = []
     @progressive_polynomial = nil
     @regressive_polynomial = nil
+  end
+
+  def clear
+    reset
+    notify :points_changed   
     notify :polynomial_changed
   end
   

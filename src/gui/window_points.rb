@@ -21,10 +21,10 @@ class WindowPoints < JFrame
     def initialize interpolator, title, remove_button
       super title
       @interpolator = interpolator
-      self.initGUI interpolator, remove_button
+      self.initGUI remove_button
     end
     
-    def initGUI interpolator, remove_button
+    def initGUI remove_button
       self.setLayout nil
       
       separation = 20
@@ -41,20 +41,19 @@ class WindowPoints < JFrame
       descriptionLabel.setBounds separation, separation, window_width - 2 * separation, field_height
       
       @list = JList.new
-      list = @list
-      list.setSelectionMode ListSelectionModel.SINGLE_INTERVAL_SELECTION
-      list.setVisibleRowCount -1
-      listScroller = JScrollPane.new list #TODO la scrollbar no se esta mostrando
-      list.setBounds separation, 2 * separation + field_height, list_width, list_height
+      @list.setSelectionMode ListSelectionModel.SINGLE_INTERVAL_SELECTION
+      @list.setVisibleRowCount -1
+      listScroller = JScrollPane.new @list #TODO la scrollbar no se esta mostrando
+      @list.setBounds separation, 2 * separation + field_height, list_width, list_height
       
       refresh_list 
-      interpolator.add_listener self, :points_changed, :refresh_list 
+      @interpolator.add_listener self, :points_changed, :refresh_list 
       if remove_button
         removeButton = JButton.new "Remove"
         removeButton.addActionListener do |e|
-          return if nothing_selected list
-          point = list.getSelectedValue
-          interpolator.remove_point point
+          return if nothing_selected @list
+          point = @list.getSelectedValue
+          @interpolator.remove_point point
           refresh_list 
         end
         removeButton.setBounds separation, 2 * separation + field_height + list_height, list_width, remove_height
@@ -62,7 +61,7 @@ class WindowPoints < JFrame
         
         clearButton = JButton.new "Remove all"
         clearButton.addActionListener do |e|
-          interpolator.clear
+          @interpolator.clear
           refresh_list 
         end
         clearButton.setBounds separation, 2 * separation + field_height + list_height + remove_height, list_width, remove_height
@@ -71,13 +70,13 @@ class WindowPoints < JFrame
 
       closeButton = JButton.new "Finish"
       closeButton.addActionListener do |e|
-        interpolator.refresh
+        @interpolator.refresh
         self.dispose
       end
       closeButton.setBounds window_width - field_width, window_height - field_height, field_width, field_height
       
       self.add descriptionLabel
-      self.add list
+      self.add @list
       self.add closeButton
       self.getRootPane.setDefaultButton closeButton
       
