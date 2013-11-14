@@ -93,12 +93,12 @@ end
 
   def draw_function g
     #user def constants
-    color_back = color 100, 100, 100
-    color_grid = color 150, 150, 150
+    color_back = color 0, 0, 0
+    color_grid = color 0, 100, 0
     grid_size = 10
-    color_axis = color 0, 100, 255
+    color_axis = color 0, 255, 0
     color_function = color 255, 255, 255
-    color_point = color 230, 0, 0
+    color_point = color 255, 0, 0
 
     #other constants
     hw = @gw / 2
