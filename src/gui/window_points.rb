@@ -15,6 +15,8 @@ import java.lang.System
 require_relative "../model/interpolator.rb"
 require_relative "../model/point.rb"
 
+require_relative "close_listener.rb"
+
 
 class WindowPoints < JFrame
   
@@ -66,9 +68,12 @@ class WindowPoints < JFrame
         end
         clearButton.setBounds separation, 2 * separation + field_height + list_height + remove_height, list_width, remove_height
         self.add clearButton
+
+        cl = CloseListener.new @interpolator
+        self.addWindowListener cl
       end
 
-      closeButton = JButton.new "Finish"
+      closeButton = JButton.new "Close"
       closeButton.addActionListener do |e|
         @interpolator.refresh
         self.dispose

@@ -10,8 +10,11 @@ import java.awt.Dimension
 import java.lang.System
 
 
+
 require_relative "../model/interpolator.rb"
 require_relative "../model/point.rb"
+
+require_relative "close_listener.rb"
 
 
 class WindowAdd < JFrame
@@ -55,13 +58,9 @@ class WindowAdd < JFrame
       end
       addButton.setBounds window_width - field_width, window_height - field_height, field_width, field_height
 
-      closeButton = JButton.new "Finish"
+      closeButton = JButton.new "Close"
       closeButton.addActionListener do |e|
-        if interpolator.polynomial
-          interpolator.refresh
-        else
-          interpolator.interpolate!
-        end
+        interpolator.refresh
         self.dispose
       end
       closeButton.setBounds window_width - 2 * field_width, window_height - field_height, field_width, field_height
@@ -79,7 +78,12 @@ class WindowAdd < JFrame
       self.setResizable false
       
       self.setDefaultCloseOperation JFrame::DISPOSE_ON_CLOSE
+      cl = CloseListener.new interpolator
+      self.addWindowListener cl
+
       self.setLocationRelativeTo nil
       self.setVisible true
     end
+
+    
 end
