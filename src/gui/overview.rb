@@ -34,12 +34,12 @@ class Overview < JFrame
     
     def initGUI interpolator
       canvas = Canvas.new
-      @canvas = canvas
       canvas.setInterpolator interpolator
       canvas.setZoom 1
       interpolator.add_listener self, :polynomial_changed, :refresh
       
       scroll = JScrollPane.new canvas
+      @canvas = canvas
       
       
       menubar = JMenuBar.new
@@ -170,6 +170,7 @@ class Overview < JFrame
       self.setJMenuBar menubar
       
       self.getContentPane.add scroll
+      @scroll = scroll
       
       self.setDefaultCloseOperation JFrame::EXIT_ON_CLOSE
       self.setSize 650, 500
@@ -178,7 +179,11 @@ class Overview < JFrame
     end
     
     def refresh params=nil
+      @canvas.resize
+      @scroll.getViewport.revalidate
       @canvas.repaint
+      # @scroll.getViewport.setView @canvas
+      # @scroll.getViewport.revalidate
     end
     
 end

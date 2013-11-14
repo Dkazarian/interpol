@@ -38,31 +38,34 @@ class Canvas < JPanel
     @zoom = @zoom * 2
   end
   
+
+  def resize
+  	unless @interpolator.points.empty?
+		points = @interpolator.points
+		min_size = 100
+		extra_size = 50
+
+		pointsX = points.map{|p| p.x.abs}
+		maxx = pointsX.max.to_int + 1
+		maxx = min_size if maxx < min_size
+
+		pointsY = points.map{|p| p.y.abs}
+		maxy = pointsY.max.to_int + 1
+		maxy = min_size if maxy < min_size
+
+		@gw = 2 * maxx + extra_size
+		@gh = 2 * maxy + extra_size
+
+		@pw = @gw * @zoom
+		@ph = @gh * @zoom
+
+		self.set_size @pw, @ph
+end
+  end
+
   def paintComponent g
     super
-    
-    unless @interpolator.points.empty?
-      points = @interpolator.points
-      min_size = 100
-      extra_size = 50
-      
-      pointsX = points.map{|p| p.x.abs}
-      maxx = pointsX.max.to_int + 1
-      maxx = min_size if maxx < min_size
-      
-      pointsY = points.map{|p| p.y.abs}
-      maxy = pointsY.max.to_int + 1
-      maxy = min_size if maxy < min_size
-      
-      @gw = 2 * maxx + extra_size
-      @gh = 2 * maxy + extra_size
-      
-      @pw = @gw * @zoom
-      @ph = @gh * @zoom
-      
-      self.set_size @pw, @ph
-      self.draw_function g if @interpolator.polynomial
-    end
+    self.draw_function g if @interpolator.polynomial
   end
   
   
