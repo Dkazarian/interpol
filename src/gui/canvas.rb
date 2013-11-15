@@ -18,6 +18,13 @@ end
 
 class Canvas < JPanel
   
+  BACKGROUND_COLOR = color 0, 0, 0
+  GRID_COLOR = color 0, 100, 0
+  AXIS_COLOR = color 0, 255, 0
+  FUNCTION_COLOR = color 255, 255, 255
+  POINT_COLOR = color 255, 0, 0
+  GRID_SIZE = 10
+
   def setInterpolator interpolator
     @interpolator = interpolator
   end
@@ -41,39 +48,60 @@ class Canvas < JPanel
 
   def resize
   	unless @interpolator.points.empty?
-		points = @interpolator.points
-		min_size = 100
-		extra_size = 50
+  		points = @interpolator.points
+  		min_size = 100
+  		extra_size = 50
 
-		pointsX = points.map{|p| p.x.abs}
-		maxx = pointsX.max.to_int + 1
-		maxx = min_size if maxx < min_size
+  		pointsX = points.map{|p| p.x.abs}
+  		maxx = pointsX.max.to_int + 1
+  		maxx = min_size if maxx < min_size
 
-		pointsY = points.map{|p| p.y.abs}
-		maxy = pointsY.max.to_int + 1
-		maxy = min_size if maxy < min_size
+  		pointsY = points.map{|p| p.y.abs}
+  		maxy = pointsY.max.to_int + 1
+  		maxy = min_size if maxy < min_size
 
-		@gw = 2 * maxx + extra_size
-		@gh = 2 * maxy + extra_size
+  		@graph_width = 2 * maxx + extra_size
+  		@graph_height = 2 * maxy + extra_size
 
-		@pw = @gw * @zoom
-		@ph = @gh * @zoom
+  		@panel_width = @graph_width * @zoom
+  		@panel_height = @graph_height * @zoom
 
-		self.set_size @pw, @ph
-end
+  		self.set_size @panel_width, @panel_height
+    end
   end
 
   def paintComponent g
     super
-    self.draw_function g if @interpolator.polynomial
+
+    return if @interpolator.points.empty?
+    #other constants
+    @half_width = @graph_width / 2
+    @half_height = @graph_height / 2
+    
+    self.setBackground BACKGROUND_COLOR
+    
+    #nos guardamos la transformacion
+    transformate = g.getTransform
+    #transformamos a coordenadas cartesianas
+    g.translate @panel_width/2, @panel_height/2
+    g.scale 1, -1
+    
+    draw_grid g
+
+    draw_axis g
+
+    draw_polynomial(g) if @interpolator.polynomial
+
+    draw_points(g) 
+    
+    #antitransformamos
+    g.setTransform transformate
+
   end
   
-  
-  
-
   def drawLine g, x1, y1, x2, y2
-  	rx = @pw / @gw #relacion x
-  	ry = @ph / @gh #relacion y
+  	rx = @panel_width / @graph_width #relacion x
+  	ry = @panel_height / @graph_height #relacion y
   	g.drawLine x1*rx, y1*ry, x2*rx, y2*ry
   end
 
@@ -83,57 +111,79 @@ end
 
   def drawString g, str, x, y
   	g.scale 1, -1
-  	rx = @pw / @gw #relacion x
-  	ry = @ph / @gh #relacion y
+  	rx = @panel_width / @graph_width #relacion x
+  	ry = @panel_height / @graph_height #relacion y
   	g.drawString str, x*rx, -y*ry
   	g.scale 1, -1
   end
 
 
 
-  def draw_function g
-    #user def constants
-    color_back = color 0, 0, 0
-    color_grid = color 0, 100, 0
-    grid_size = 10
-    color_axis = color 0, 255, 0
-    color_function = color 255, 255, 255
-    color_point = color 255, 0, 0
+  def draw_polynomial g
+    #dibujamos la funcion
+    g.setColor FUNCTION_COLOR
+    last_x = -@half_width
+    for x in -@half_width..@half_width
+      
+      y = @interpolator.evaluate x
+      last_y = y if x == -@half_width
+      
+      if (y > @half_height) ^ (last_y > @half_height)
+        dy = y - last_y
+        t = (@half_height - last_y) / dy
+        dx = x - last_x
+        yt = @half_height
+        xt = last_x + t * dx
+        drawLine g, last_x, last_y, xt, yt if y > @half_height
+        drawLine g, xt, yt, x, y if last_y > @half_height
+      elsif (y < -@half_height) ^ (last_y < -@half_height)
+        dy = y - last_y
+        t = (-@half_height - last_y) / dy
+        dx = x - last_x
+        yt = -@half_height
+        xt = last_x + t * dx
+        drawLine g, last_x, last_y, xt, yt if y < -@half_height
+        drawLine g, xt, yt, x, y if last_y < -@half_height
+      elsif y.abs < @half_height && last_y.abs < @half_height
+        drawLine g, last_x, last_y, x, y
+      end
+      
 
-    #other constants
-    hw = @gw / 2
-    hh = @gh / 2
-    
-    self.setBackground color_back
-    
-    #nos guardamos la antitransformacion
-    at = g.getTransform
-    #transformamos a coordenadas cartesianas
-    g.translate @pw/2, @ph/2
-    g.scale 1, -1
-    
+      last_x = x
+      last_y = y
+      
+    end
+  end
+
+  def draw_grid g
     #dibujamos una grilla
-    gridw = (hw / grid_size).to_int
-    gridh = (hh / grid_size).to_int
-    for i in -grid_size..grid_size
-      g.setColor color_grid
-      drawLine g, gridw * i, -hh, gridw * i, hh
-      drawLine g, -hw, gridh * i, hw, gridh * i
+    gridw = (@half_width / GRID_SIZE).to_int
+    gridh = (@half_height / GRID_SIZE).to_int
+    for i in -GRID_SIZE..GRID_SIZE
+      g.setColor GRID_COLOR
+      drawLine g, gridw * i, -@half_height, gridw * i, @half_height
+      drawLine g, -@half_width, gridh * i, @half_width, gridh * i
   
-      g.setColor  color_axis
+      g.setColor  AXIS_COLOR
       drawLine g, gridw * i, 3, gridw * i, -3
       drawLine g, 3, gridh * i, -3, gridh * i
     end
-    
+
+  end
+
+  def draw_axis g
+
+    gridw = (@half_width / GRID_SIZE).to_int
+    gridh = (@half_height / GRID_SIZE).to_int
     #dibujamos los ejes
-    drawLine g, 0, -hh, 0, hh
-    drawLine g, -hw, 0, hw, 0
+    drawLine g, 0, -@half_height, 0, @half_height
+    drawLine g, -@half_width, 0, @half_width, 0
     
     #imprimimos texto en los ejes
-    g.setColor color_axis
-    drawString g, "x", hw - 10, -10
-    drawString g, "P(x) = y", -70, hh - 10
-    for i in 1..grid_size
+    g.setColor AXIS_COLOR
+    drawString g, "x", @half_width - 10, -10
+    drawString g, "P(x) = y", -70, @half_height - 10
+    for i in 1..GRID_SIZE
       x = gridw * i
       nx = -x
       y = -gridh * i
@@ -146,62 +196,24 @@ end
       drawString g, ny.to_s, 3, y
     end
     drawString g, "0", 3, 3
-    
+  end
+  
+  def draw_points g
     #marcamos los puntos que ingresamos
     points = @interpolator.points
-    g.setColor color_point
+    g.setColor POINT_COLOR
     for p in points
       drawLine g, 0, p.y, p.x, p.y
       drawLine g, p.x, 0, p.x, p.y
     end
-    
-    #dibujamos la funcion
-    g.setColor color_function
-    last_x = -hw
-    for x in -hw..hw
-      
-      y = @interpolator.evaluate x
-      last_y = y if x == -hw
-      
 
-      shh = -hh
-
-      if (y > hh) ^ (last_y > hh)
-        dy = y - last_y
-        t = (hh - last_y) / dy
-        dx = x - last_x
-        yt = hh
-        xt = last_x + t * dx
-        drawLine g, last_x, last_y, xt, yt if y > hh
-        drawLine g, xt, yt, x, y if last_y > hh
-      elsif (y < shh) ^ (last_y < shh)
-        dy = y - last_y
-        t = (shh - last_y) / dy
-        dx = x - last_x
-        yt = shh
-        xt = last_x + t * dx
-        drawLine g, last_x, last_y, xt, yt if y < shh
-        drawLine g, xt, yt, x, y if last_y < shh
-      elsif y.abs < hh && last_y.abs < hh
-        drawLine g, last_x, last_y, x, y
-      end
-      
-
-      last_x = x
-      last_y = y
-      
-    end
-    
     #imprimimos los puntos
-    g.setColor color_point
+    g.setColor POINT_COLOR
     for p in points
       drawString g, p.to_s, p.x, p.y
     end
-    
-    #antitransformamos
-    g.setTransform at
   end
-  
+
   def set_size w, h
     self.setPreferredSize Dimension.new(w, h)
   end
