@@ -23,7 +23,7 @@ class Canvas < JPanel
   AXIS_COLOR = color 0, 255, 0
   FUNCTION_COLOR = color 255, 255, 255
   POINT_COLOR = color 255, 0, 0
-  GRID_STD_CELLS = 8
+  GRID_STD_CELLS = 10
 
   def setInterpolator interpolator
     @interpolator = interpolator
@@ -46,7 +46,7 @@ class Canvas < JPanel
   end
   
 
-  def resize
+  def refreshSize minw, minh
   	unless @interpolator.points.empty?
   		points = @interpolator.points
   		min_size = 100
@@ -65,6 +65,8 @@ class Canvas < JPanel
 
   		@panel_width = @graph_width * @zoom
   		@panel_height = @graph_height * @zoom
+      @panel_width = minw if @panel_width < minw
+      @panel_height = minh if @panel_height < minh
 
   		self.set_size @panel_width, @panel_height
     end
@@ -103,6 +105,8 @@ class Canvas < JPanel
   	rx = @panel_width / @graph_width #relacion x
   	ry = @panel_height / @graph_height #relacion y
   	g.drawLine x1*rx, y1*ry, x2*rx, y2*ry
+    # z = @zoom
+    # g.drawLine x1*z, y1*z, x2*z, y2*z
   end
 
   def drawPoint g, x, y
@@ -113,7 +117,9 @@ class Canvas < JPanel
   	g.scale 1, -1
   	rx = @panel_width / @graph_width #relacion x
   	ry = @panel_height / @graph_height #relacion y
-  	g.drawString str, x*rx, -y*ry
+    g.drawString str, x*rx, -y*ry
+   #  z = @zoom
+  	# g.drawString str, x*z, -y*z
   	g.scale 1, -1
   end
 
@@ -157,7 +163,7 @@ class Canvas < JPanel
 
   def draw_grid g
     #dibujamos una grilla
-    gridsize = GRID_STD_CELLS * @zoom
+    gridsize = GRID_STD_CELLS #* @zoom
     gridw = (@half_width / gridsize).to_int
     gridh = (@half_height / gridsize).to_int
     for i in -gridsize..gridsize
@@ -173,7 +179,7 @@ class Canvas < JPanel
   end
 
   def draw_axis g
-    gridsize = GRID_STD_CELLS * @zoom
+    gridsize = GRID_STD_CELLS #* @zoom
     gridw = (@half_width / gridsize).to_int
     gridh = (@half_height / gridsize).to_int
     #dibujamos los ejes

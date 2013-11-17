@@ -179,11 +179,9 @@ class Overview < JFrame
     end
     
     def refresh params=nil
-      @canvas.resize
+      minsize = @scroll.getViewport.getSize
+      @canvas.refreshSize minsize.width, minsize.height
       @scroll.getViewport.revalidate
       @canvas.repaint
-      # @scroll.getViewport.setView @canvas
-      # @scroll.getViewport.revalidate
     end
-    
 end
