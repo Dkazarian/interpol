@@ -155,6 +155,9 @@ class CommandLine
     puts "\n\t\t#{"**".yellow}Fin de la demostracion#{"**".yellow}\n\n"
   end
 
+  def cmd_about params = nil
+    puts "Interpolator\n\nDaniela Belen Kazarian\nFranco Tomas Hecht\nPablo Santiago Fernandez\n\n2013"
+  end
   
 
 
