@@ -23,7 +23,7 @@ class Canvas < JPanel
   AXIS_COLOR = color 0, 255, 0
   FUNCTION_COLOR = color 255, 255, 255
   POINT_COLOR = color 255, 0, 0
-  GRID_SIZE = 10
+  GRID_STD_CELLS = 8
 
   def setInterpolator interpolator
     @interpolator = interpolator
@@ -157,9 +157,10 @@ class Canvas < JPanel
 
   def draw_grid g
     #dibujamos una grilla
-    gridw = (@half_width / GRID_SIZE).to_int
-    gridh = (@half_height / GRID_SIZE).to_int
-    for i in -GRID_SIZE..GRID_SIZE
+    gridsize = GRID_STD_CELLS * @zoom
+    gridw = (@half_width / gridsize).to_int
+    gridh = (@half_height / gridsize).to_int
+    for i in -gridsize..gridsize
       g.setColor GRID_COLOR
       drawLine g, gridw * i, -@half_height, gridw * i, @half_height
       drawLine g, -@half_width, gridh * i, @half_width, gridh * i
@@ -172,9 +173,9 @@ class Canvas < JPanel
   end
 
   def draw_axis g
-
-    gridw = (@half_width / GRID_SIZE).to_int
-    gridh = (@half_height / GRID_SIZE).to_int
+    gridsize = GRID_STD_CELLS * @zoom
+    gridw = (@half_width / gridsize).to_int
+    gridh = (@half_height / gridsize).to_int
     #dibujamos los ejes
     drawLine g, 0, -@half_height, 0, @half_height
     drawLine g, -@half_width, 0, @half_width, 0
@@ -183,7 +184,7 @@ class Canvas < JPanel
     g.setColor AXIS_COLOR
     drawString g, "x", @half_width - 10, -10
     drawString g, "P(x) = y", -70, @half_height - 10
-    for i in 1..GRID_SIZE
+    for i in 1..gridsize
       x = gridw * i
       nx = -x
       y = -gridh * i
