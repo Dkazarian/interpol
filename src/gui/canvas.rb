@@ -52,15 +52,10 @@ class Canvas < JPanel
   		min_size = 100
   		extra_size = 50
 
-  		pointsX = points.map{|p| p.x.abs}
-  		maxx = pointsX.max.to_int + 1
-  		maxx = min_size if maxx < min_size
-
-  		pointsY = points.map{|p| p.y.abs}
-  		maxy = pointsY.max.to_int + 1
-  		maxy = min_size if maxy < min_size
-
-      max = [maxx, maxy].max
+      values = points.map{|p| p.x.abs}
+      values.concat(points.map{|p| p.y.abs})
+      max = values.max.to_int + 1
+      max = min_size if max < min_size
 
   		@graph_width = 2 * max + extra_size
   		@graph_height = 2 * max + extra_size
