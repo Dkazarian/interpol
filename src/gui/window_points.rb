@@ -43,7 +43,7 @@ class WindowPoints < JFrame
       descriptionLabel.setBounds separation, separation, window_width - 2 * separation, field_height
       
       @list = JList.new
-      @list.setSelectionMode ListSelectionModel.SINGLE_INTERVAL_SELECTION
+      # @list.setSelectionMode ListSelectionModel.SINGLE_INTERVAL_SELECTION
       @list.setVisibleRowCount -1
       listScroller = JScrollPane.new @list #TODO la scrollbar no se esta mostrando
       @list.setBounds separation, 2 * separation + field_height, list_width, list_height
@@ -54,8 +54,8 @@ class WindowPoints < JFrame
         removeButton = JButton.new "Remove"
         removeButton.addActionListener do |e|
           return if nothing_selected @list
-          point = @list.getSelectedValue
-          @interpolator.remove_point point
+          points = @list.getSelectedValues
+          points.each{|point| @interpolator.remove_point point}
           refresh_list 
         end
         removeButton.setBounds separation, 2 * separation + field_height + list_height, list_width, remove_height
