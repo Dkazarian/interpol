@@ -60,8 +60,10 @@ class Canvas < JPanel
   		maxy = pointsY.max.to_int + 1
   		maxy = min_size if maxy < min_size
 
-  		@graph_width = 2 * maxx + extra_size
-  		@graph_height = 2 * maxy + extra_size
+      max = [maxx, maxy].max
+
+  		@graph_width = 2 * max + extra_size
+  		@graph_height = 2 * max + extra_size
 
   		@panel_width = @graph_width * @zoom
   		@panel_height = @graph_height * @zoom
