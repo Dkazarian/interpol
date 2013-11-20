@@ -38,24 +38,25 @@ class CommandLine
   end
 
   def describe_command cmd, desc
-    puts "#{cmd.cyan} \t#{desc}"
+    puts "#{cmd} \t#{desc}"
   end
+  
   def cmd_help params = nil
     
-    puts ("="*40).yellow
+    puts ("="*40)
     puts "Comandos disponibles"
-    puts ("="*40).yellow
+    puts ("="*40)
     describe_command "add x1,y1 x2,y2 xn,yn", "Agrega punto/s" 
     describe_command "rm x1,y1 x2,y2 xn,yn", "Remueve punto/s"
-    describe_command "interpolate", "Muestra o calcula el polinomio interpolador. Atajo: #{"int".cyan}."
-    describe_command "evaluate x",  "Evalua el polinomio en x. Atajo: #{"eval".cyan}."
+    describe_command "interpolate", "Muestra o calcula el polinomio interpolador. Atajo: #{"int"}."
+    describe_command "evaluate x",  "Evalua el polinomio en x. Atajo: #{"eval"}."
     describe_command "points", "Muestra la lista actual de puntos"
     describe_command "clear", "Limpia la lista de puntos"    
     describe_command "deltas", "Muestra la tabla de deltas"
     describe_command "help", "Muestra comandos disponibles"
     describe_command "quit", "Salir"
-    puts ("="*40).yellow
-    puts "Escriba #{"demo".cyan} para ver un ejemplo"
+    puts ("="*40)
+    puts "Escriba #{"demo"} para ver un ejemplo"
     puts ""
     
   end
@@ -93,9 +94,9 @@ class CommandLine
   def cmd_evaluate params
     x = Float(params[0]) rescue nil
     if x
-      puts @interpolator.evaluate(x).to_s.yellow 
+      puts @interpolator.evaluate(x).to_s 
     else
-      puts "No se puede evaluar '#{params[0]}'".red
+      puts "No se puede evaluar '#{params[0]}'"
     end
   end 
 
@@ -105,13 +106,13 @@ class CommandLine
   
   #Imprime la lista de puntos
   def cmd_points params = nil
-    puts @interpolator.points.length > 0? "#{@interpolator.points*"\n"}".green : "No se ingresaron puntos.".green
+    puts @interpolator.points.length > 0? "#{@interpolator.points*"\n"}" : "No se ingresaron puntos."
   end
   
   #Resetea
   def cmd_clear params = nil
     @interpolator.clear
-    puts "Se eliminaron todos los puntos.".green
+    puts "Se eliminaron todos los puntos."
   end
 
   def cmd_clr params = nil
@@ -123,7 +124,7 @@ class CommandLine
     length = deltas.length - 1
     for ii in 0..length
       for i in 0..length-ii
-        print "#{deltas[i][ii]}\t".yellow
+        print "#{deltas[i][ii]}\t"
       end
       puts ""
     end
@@ -152,7 +153,7 @@ class CommandLine
       puts ""
       sleep 2
     end
-    puts "\n\t\t#{"**".yellow}Fin de la demostracion#{"**".yellow}\n\n"
+    puts "\n\t\t#{"**"}Fin de la demostracion#{"**"}\n\n"
   end
 
   def cmd_about params = nil
@@ -172,7 +173,7 @@ class CommandLine
   def print_interpolator_info params
     if @show_info
       puts ""
-      puts params.green
+      puts params
     end
   end
 
@@ -192,7 +193,7 @@ class CommandLine
       if self.respond_to? "cmd_#{command}"
         send("cmd_#{command}", params)
       else
-        puts "No existe el comando '#{command}'. Para ver los comandos, use help".red
+        puts "No existe el comando '#{command}'. Para ver los comandos, use help"
       end
     end
   end
@@ -202,12 +203,12 @@ class CommandLine
   def polynomial_changed params
     if @interpolator.polynomial
       puts ""
-      puts ("*"*20).yellow
+      puts ("*"*20)
       puts "Progresivo: "
       puts "p(x) = " + @interpolator.progressive_polynomial.to_s
       puts "Regresivo: "
       puts "p(x) = " + @interpolator.regressive_polynomial.to_s
-      puts ("*"*20).yellow
+      puts ("*"*20)
     end
   end
 
@@ -219,34 +220,7 @@ class CommandLine
     Point.parse_list(list).each {|p| @interpolator.send(method,p)}
     @interpolator.refresh
   rescue PointFormatException => e
-    puts e.message.red
+    puts e.message
   end
 
-end
-
-class String
-  # colorization
-  def colorize(color_code)
-    if $COLORIZE
-      "\e[#{color_code}m#{self}\e[0m"
-    else
-      self
-    end
-  end
-
-  def red
-    colorize(31)
-  end
-
-  def green
-    colorize(32)
-  end
-
-  def yellow
-    colorize(33)
-  end
-
-  def cyan
-    colorize(36)
-  end
 end
