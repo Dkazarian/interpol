@@ -89,9 +89,9 @@ class Canvas < JPanel
 
     draw_axis g
 
-    draw_polynomial(g) if @interpolator.polynomial
-
     draw_points(g) 
+  
+    draw_polynomial(g) if @interpolator.polynomial
     
     #antitransformamos
     g.setTransform transformate

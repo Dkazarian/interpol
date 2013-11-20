@@ -131,7 +131,7 @@ class CommandLine
   
   def cmd_demo params = nil
     commands = [
-      "add 1,1 3,3 4,13 5,37 7,151",
+      "add 10,10 30,30 40,130 80,370 170,151",
       "add 2,3 4,pato",
       "basura",
       "interpolate",
