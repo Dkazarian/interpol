@@ -47,7 +47,7 @@ class Canvas < JPanel
   
 
   def refreshSize minw, minh
-  	unless @interpolator.points.empty?
+  	unless @interpolator.points.empty? 
   		points = @interpolator.points
   		min_size = 100
   		extra_size = 50
@@ -72,7 +72,7 @@ class Canvas < JPanel
   def paintComponent g
     super
 
-    return if @interpolator.points.empty?
+    return if @interpolator.points.empty? or @graph_width.nil? or @graph_height.nil?
     #other constants
     @half_width = @graph_width / 2
     @half_height = @graph_height / 2
